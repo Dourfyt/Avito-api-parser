@@ -1,0 +1,49 @@
+import os
+from pathlib import Path
+
+class File:
+    def __init__(self,filename):
+        self.filename = str(filename)+'.txt'
+        self.__create_file_if_not_exists()
+
+    def __create_file_if_not_exists(self):
+        if not os.path.exists(self.filename):
+            with open(f"{Path(__file__).resolve().parent.parent}{self.filename}", "w") as f:
+                pass
+
+    def add(self, message):
+        """Добавить строку"""
+        with open(self.filename, "a") as f:
+            f.write(message.text+'\n')
+
+    def get(self, message):
+        """Получить строку"""
+        with open(self.filename, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.strip('\n') == message.text:
+                    return line
+                else: return "Данная строка не найдена"
+
+    def get_first(self):
+        """Получить первую строку"""
+        with open(self.filename, "r") as f:
+            return f.readline()
+        
+    def delete_first(self):
+        """Удалить первую строку"""
+        with open(self.filename, "r") as f:
+            lines = f.readlines()
+        with open(self.filename, "w") as f:
+            for line in lines[1:]:
+                    f.write(line)
+
+    def delete(self, message):
+        """Удалить строку"""
+        with open(self.filename, "r") as f:
+            lines = f.readlines()
+        with open(self.filename, "w") as f:
+            for line in lines:
+                if line.strip("\n") != message.text:
+                    f.write(line)
+                else: return "Данная строка не найдена"
