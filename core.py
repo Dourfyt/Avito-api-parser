@@ -91,7 +91,7 @@ class WBParse:
             logger.error(f"Ошибка при обработке: {error}")
 
 def main():
-    url = ''
+    url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
     try:
         with SB(headless=False,
                 page_load_strategy="eager",
