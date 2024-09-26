@@ -9,7 +9,7 @@ import configparser
 
 
 config = configparser.ConfigParser(interpolation=None)
-config.read("settings.ini")
+config.read("config.ini")
 
 class WBParse:
 
