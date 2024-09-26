@@ -28,6 +28,7 @@ class WBParse:
     @logger.catch
     def __parse_page(self):
         """Парсит открытую страницу"""
+        time.sleep(1)
         try:
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
@@ -37,6 +38,7 @@ class WBParse:
                     self.tickets_list = []
 
             titles = self.driver.find_elements(Locator.ROWS[1], by="css selector")
+            print(titles)
             for title in titles:
 
                 id = title.find_element(*Locator.ID[1])
@@ -62,6 +64,7 @@ class WBParse:
 
     def __parse_full_page(self, url: str, data: dict = {}) -> dict:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
+        time.sleep(1)
         try:
             self.driver.find_element(*Locator.PLAN[1]).click()
             cells = self.driver.find_elements(Locator.ROW_TABLE[1], by="css selector")
@@ -94,6 +97,7 @@ def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
     try:
         with SB(headless=False,
+                headed=True,
                 page_load_strategy="eager",
                 block_images=True,
                 #skip_js_waits=True
