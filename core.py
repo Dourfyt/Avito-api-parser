@@ -4,6 +4,7 @@ import re
 from notifiers.logging import NotificationHandler
 from seleniumbase import SB
 from loguru import logger
+from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from locator import Locator
@@ -19,11 +20,13 @@ class WBParse:
     def __init__(self,
                  driver = None,
                  url = None,
+                 action = None,
                  ):
         self.data = []
         self.url = url
         self.tg_token = config['BOT']["TOKEN"]
         self.driver = driver
+        self.action = action
 
     def __get_url(self):
         self.driver.get(self.url)
@@ -41,10 +44,11 @@ class WBParse:
                 with open('tg/tickets.txt', 'w') as file:
                     self.tickets_list = []
             navigator = self.driver.find_element(*Locator.NAVIGATOR)
+            self.action.move_to_element(navigator)
+            self.action.perform()
             print(navigator)
             navigator.click()
-            print("Успешно нажато")
-            time.sleep(2)
+
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             time.sleep(2)
             titles = self.driver.find_elements(*Locator.ROWS)
@@ -120,8 +124,10 @@ def main():
                 try:
                     driver = WBParse(
                         url=url,
-                        driver=browser_driver  # Передаем уже созданный браузер
+                        driver=browser_driver,
+                        action = webdriver.ActionChains(browser_driver)  # Передаем уже созданный браузер
                     )
+
                     driver.parse()
                     logger.info(f"Завершен парсинг для URL: {url}")
                     time.sleep(10)
