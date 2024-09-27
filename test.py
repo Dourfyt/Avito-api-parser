@@ -21,12 +21,8 @@ def main():
     with webdriver.Chrome(options=options) as browser_driver:
 
         browser_driver.get(url)
+        time.sleep(99999)
 
-        time.sleep(20)
-        # Обновляем страницу
-        browser_driver.refresh()
-
-        time.sleep(20)
         # Добавьте здесь свои дальнейшие действия с браузером
 if __name__ == "__main__":
     main()
