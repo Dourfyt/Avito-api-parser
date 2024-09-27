@@ -43,12 +43,13 @@ class WBParse:
             else:
                 with open('tg/tickets.txt', 'w') as file:
                     self.tickets_list = []
-            navigator = self.driver.find_element(*Locator.NAVIGATOR)
-            self.action.move_to_element(navigator)
-            self.action.perform()
-            print(navigator)
-            self.driver.find_element(*Locator.LI_NAVIGATOR).click()
-            time.sleep(2)
+            # navigator = self.driver.find_element(*Locator.NAVIGATOR)
+            # self.action.move_to_element(navigator)
+            # self.action.perform()
+            # print(navigator)
+            # self.driver.find_element(*Locator.LI_NAVIGATOR).click()
+            # time.sleep(2)
+            self.driver.get(self.url)
             titles = self.driver.find_elements(*Locator.ROWS)
             print(titles)
             for title in titles:
