@@ -49,7 +49,7 @@ class WBParse:
             # print(navigator)
             # self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             # time.sleep(2)
-            self.driver.open_new_window
+            self.driver.open_new_window()
             self.driver.switch_to_window(1)
             self.driver.get(self.url)
             titles = self.driver.find_elements(*Locator.ROWS)
