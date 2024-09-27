@@ -4,8 +4,11 @@ import re
 from notifiers.logging import NotificationHandler
 from seleniumbase import SB
 from loguru import logger
+from seleniumwire import webdriver
+from selenium.webdriver.common.by import By
 from locator import Locator
 import configparser
+import json
 
 
 config = configparser.ConfigParser(interpolation=None)
@@ -24,6 +27,7 @@ class WBParse:
 
     def __get_url(self):
         self.driver.get(self.url)
+        time.sleep(15)
         
     @logger.catch
     def __parse_page(self):
@@ -37,12 +41,12 @@ class WBParse:
                 with open('tg/tickets.txt', 'w') as file:
                     self.tickets_list = []
 
-            titles = self.driver.find_elements(Locator.ROWS[1], by="css selector")
+            titles = self.driver.find_elements(*Locator.ROWS)
             print(titles)
             for title in titles:
 
-                id = title.find_element(*Locator.ID[1])
-                status = title.find_element(*Locator.STATUS[1]).text
+                id = title.find_element(*Locator.ID)
+                status = title.find_element(*Locator.STATUS).text
 
                 if id and status == "Не запланировано":
                     if os.path.isfile('tg/tickets.txt'):
@@ -88,6 +92,7 @@ class WBParse:
         """Метод для вызова парсинга"""
         try:
             self.__get_url()  # Загрузка страницы
+            logger.info(f"Страница загружена")
             self.__parse_page()
             logger.info(f"Парсинг завершен")
         except Exception as error:
@@ -95,13 +100,15 @@ class WBParse:
 
 def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
+    options = webdriver.ChromeOptions()
+    options.add_argument(r'user-data-dir=usr\bin\User Data')
+    options.add_argument('--profile-directory=Profile 1')
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
     try:
-        with SB(headless=False,
-                headed=True,
-                page_load_strategy="eager",
-                block_images=True,
-                #skip_js_waits=True
-                ) as browser_driver:
+        with webdriver.Chrome(options=options) as browser_driver:
+            # Обновляем страницу
             time.sleep(0.5)
             while True:
                 try:
@@ -115,8 +122,8 @@ def main():
                 except Exception as error:
                     logger.error(f"Ошибка при парсинге URL {url}: {error}")
                     logger.error('Произошла ошибка, но работа будет продолжена через 30 сек. '
-                                 'Если ошибка повторится несколько раз - перезапустите скрипт.'
-                                 'Если и это не поможет - обратитесь к разработчику по ссылке ниже')
+                                'Если ошибка повторится несколько раз - перезапустите скрипт.'
+                                'Если и это не поможет - обратитесь к разработчику по ссылке ниже')
 
                 logger.info("Пауза перед следующим циклом")
                 time.sleep(10)
