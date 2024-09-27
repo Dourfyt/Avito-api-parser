@@ -15,5 +15,5 @@ class Locator:
     CHOOSE = (By.CSS_SELECTOR,".Custom-popup")
     ROW_TABLE = (By.CSS_SELECTOR, ".Calendar-plan-view__calendar-row")
     TEST = (By.CSS_SELECTOR, ".Select__input__-CFKpO5qqT")
-    NAVIGATOR = (By.CSS_SELECTOR, ".button-link_Button-link__BkNzZ button-link_Button-link--button__VBlT9 button-link_Button-link--list-item__u-gjf button-link_Button-link--button-small__7YJ-w")
-    LI_NAVIGATOR = (By.CSS_SELECTOR, ".text_Text__60ecO text_Text--body-m__QbFDv text_Text--inherit__kLuQ1 text_Text--white-space-nowrap__uHONd text_Text--textDecoration-none__RR11p")
+    NAVIGATOR = (By.CSS_SELECTOR, 'data-testid="menu.section.supply-management-button-link"')
+    LI_NAVIGATOR = (By.CSS_SELECTOR, 'data-testid="menu.supply-management-front-button-link"')
