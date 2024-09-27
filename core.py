@@ -43,6 +43,8 @@ class WBParse:
             navigator = self.driver.find_element(*Locator.NAVIGATOR)
             print(navigator)
             navigator.click()
+            print("Успешно нажато")
+            time.sleep(2)
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             time.sleep(2)
             titles = self.driver.find_elements(*Locator.ROWS)
