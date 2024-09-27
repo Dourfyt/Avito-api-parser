@@ -47,8 +47,6 @@ class WBParse:
             self.action.move_to_element(navigator)
             self.action.perform()
             print(navigator)
-            navigator.click()
-
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             time.sleep(2)
             titles = self.driver.find_elements(*Locator.ROWS)
