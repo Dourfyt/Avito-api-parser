@@ -159,8 +159,7 @@ def main():
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
     chat_id = config["BOT"]["PERSON"]
-    url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F"
-    requests.get(url)
+    requests.get(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
