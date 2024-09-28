@@ -16,7 +16,7 @@ from core import main
 
 # Получаем путь до корневой директории проекта
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, '../..'))
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
 
 # Путь к файлу avito_api.py
 core_path = os.path.join(project_root, 'core.py')
