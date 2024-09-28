@@ -41,8 +41,8 @@ class WBParse:
     def __parse_page(self):
         """Парсит открытую страницу"""
         time.sleep(1)
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
         options = self.driver.find_elements(By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")
         for option in options:
             if option.text == "100":
