@@ -90,12 +90,14 @@ class WBParse:
                     coefficient_text = coefficient_element.text
                     if "Бесплатно" in coefficient_text:
                         coefficient_value = "Бесплатно"
-                        button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Mobile-calendar-cell__button-container__W5vPcaL2M- button')
+                        button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
                         self.action.move_to_element(button_hover)
                         self.action.perform()
                         try:
-                            time.sleep(3)
-                            button_hover.click()
+                            WebDriverWait(self.driver, 10).until(
+                                EC.element_to_be_clickable(
+                                    (By.CSS_SELECTOR, 'div.Mobile-calendar-cell__button-container__W5vPcaL2M- button'))
+                            ).click()
                             break
                         except Exception as e:
                             print(e)
