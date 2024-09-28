@@ -66,7 +66,6 @@ class WBParse:
                         global id_ticket
                         id_ticket = id
                         id.click()
-                        logger.success("Yes")
                         if self.__parse_full_page(id):
                             tickets.delete(id_ticket.text.strip())
                             break
@@ -81,7 +80,7 @@ class WBParse:
         date = data.get('date')
         logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
-    @logger.catch
+
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
@@ -157,6 +156,8 @@ def main():
     token = config["BOT"]["TOKEN"]
     person = config["BOT"]["PERSON"]
     if token and person:
+        print(f"Token: {token}")
+        print(f"Chat ID: {person}")
         params = {
             'token': token,
             'chat_id': person
