@@ -10,6 +10,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 import os
 from multiprocessing import Process
+import sys
+sys.path.append('..')
 from core import main
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
