@@ -1,6 +1,6 @@
 import asyncio
 import logging
-import tg.ticket
+import ticket
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters.command import Command
 import configparser
@@ -19,7 +19,7 @@ config = configparser.ConfigParser()
 config.read(config_path)
 bot = Bot(token=config['BOT']["token"])
 dp = Dispatcher(storage=MemoryStorage())
-file = tg.ticket.File('tickets')
+file = ticket.File('tickets')
 
 class Tickets(StatesGroup):
     add_ticket = State()
