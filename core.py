@@ -66,7 +66,7 @@ class WBParse:
             for row in rows:
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
-                if id.text and status.lower() == "не запланировано":
+                if id.text.strip() != '-' and status.lower() == "не запланировано":
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
@@ -77,11 +77,10 @@ class WBParse:
                         self.__parse_full_page(id)
                         break
                     else:
-                        print(id.text.strip())
-                        tickets.delete("22001535")
+                        continue
                 else:
                     print(id.text.strip())
-                    tickets.delete("22001535")
+                    tickets.delete("22001533")
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
