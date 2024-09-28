@@ -105,6 +105,8 @@ class WBParse:
                             time.sleep(1)
                             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            print(
+                                "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
                             return
                         except Exception as e:
                             self.action.move_to_element(button_hover)
@@ -112,6 +114,8 @@ class WBParse:
                             WebDriverWait(self.driver, 10).until(
                                 EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            print(
+                                "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
                             return
                     else:
                         if '✕' in coefficient_text:
@@ -125,12 +129,15 @@ class WBParse:
                                     time.sleep(1)
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    print("saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
                                     return
                                 except Exception as e:
                                     self.action.move_to_element(button_hover)
                                     self.action.perform()
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                                    print(
+                                        "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
                                     return
                         else:
                             print("Коэффициент не найден")
