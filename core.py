@@ -80,7 +80,7 @@ class WBParse:
             id_ticket = data.get('id_ticket')
             print(f"Ticket ID для удаления: {id_ticket}")
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
-            tickets.delete(str(id_ticket.strip()))
+            tickets.delete("29356574")
         except Exception as e:
             print(e)
 
