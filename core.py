@@ -44,8 +44,10 @@ class WBParse:
         """Парсит открытую страницу"""
         time.sleep(1)
         try:
+            # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
+                    # Очищаем каждый ID от лишних пробелов и символов
                     self.tickets_list = list(map(str.rstrip, file.readlines()))
             else:
                 self.tickets_list = []
@@ -69,7 +71,7 @@ class WBParse:
 
             # Собираем ID, которые найдены на странице
             found_ids = []
-            print((found_ids, self.tickets_list))
+
             for row in rows:
                 id_element = row.find_element(*Locator.ID)
                 id_text = id_element.text.strip()  # Убираем пробелы
@@ -88,7 +90,7 @@ class WBParse:
                         break
                 else:
                     continue
-            print((found_ids, self.tickets_list))
+
             # Удаляем из tickets_list те ID, которых нет на странице
             self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in found_ids]
 
