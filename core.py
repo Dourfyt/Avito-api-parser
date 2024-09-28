@@ -79,7 +79,7 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.error(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        logger.success(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
@@ -102,10 +102,12 @@ class WBParse:
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            print("aga")
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            print("aga")
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -118,10 +120,12 @@ class WBParse:
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    print("aga")
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                                    print("aga")
                                     return
                         else:
                             print("Коэффициент не найден")
