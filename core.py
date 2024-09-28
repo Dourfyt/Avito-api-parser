@@ -75,9 +75,14 @@ class WBParse:
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
-    def __pretty_log(self):
+    def __pretty_log(self, data):
         """Красивый вывод"""
-        logger.success(f'Статус заявки № изменен на "запланирован" с коэффициентом')
+        try:
+            coef = data.get('coefficient')
+            date = data.get('date')
+            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        except Exception as e:
+            print(e)
 
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
@@ -99,11 +104,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log()
+                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log()
+                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
