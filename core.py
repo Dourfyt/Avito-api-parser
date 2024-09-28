@@ -2,6 +2,7 @@ import os
 import time
 import re
 import requests
+from notifiers.logging import NotificationHandler
 from seleniumbase import SB
 from loguru import logger
 from selenium.webdriver import ActionChains
@@ -76,13 +77,9 @@ class WBParse:
 
     def __pretty_log(self, data):
         """Красивый вывод"""
-        token = config["BOT"]["TOKEN"]
-        chat_id = config["BOT"]["PERSON"]
         coef = data.get('coefficient')
         date = data.get('date')
-        message = f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}'
-        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
-        requests.get(url)
+        logger.success(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
@@ -104,13 +101,10 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            print("SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            print(
-                                "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                     else:
                         if '✕' in coefficient_text:
@@ -123,14 +117,10 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    print(
-                                        "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    print(
-                                        "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                                     return
                         else:
@@ -163,6 +153,15 @@ def main():
     options.add_argument('--profile-directory=Profile 1')
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    token = config["BOT"]["TOKEN"]
+    person = config["BOT"]["PERSON"]
+    if token and person:
+        params = {
+            'token': token,
+            'chat_id': person
+        }
+        tg_handler = NotificationHandler("telegram", defaults=params)
+        logger.add(tg_handler, level="SUCCESS", format="{message}")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
