@@ -49,7 +49,7 @@ class WBParse:
             self.action.move_to_element(navigator)
             self.action.perform()
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
-            time.sleep(3)
+            time.sleep(7)
             rows = self.driver.find_elements(*Locator.ROWS)
             time.sleep(2)
             for row in rows:
