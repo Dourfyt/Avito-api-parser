@@ -77,7 +77,7 @@ class WBParse:
                         self.__parse_full_page(id)
                         break
                     else:
-                        print(id.text.strip())
+                        print((id.text.strip(), status.lower()))
                 else:
                     tickets.delete(id.text.strip())
         except Exception as e:
