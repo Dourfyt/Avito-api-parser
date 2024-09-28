@@ -83,6 +83,7 @@ class WBParse:
         time.sleep(1)
         try:
             self.driver.find_element(*Locator.PLAN).click()
+            time.sleep(2)
             cells = self.driver.find_elements(*Locator.CELLS_TABLE)
             print(cells)
             for cell in cells:
