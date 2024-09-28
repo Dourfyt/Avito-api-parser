@@ -93,9 +93,13 @@ class WBParse:
                         button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
                         self.action.move_to_element(button_hover)
                         self.action.perform()
-                        sleep(2)
-                        button_hover.click()
-                        break
+                        try:
+                            sleep(2)
+                            button_hover.click()
+                            break
+                        except Exception as e:
+                            print(e)
+                            continue
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -106,8 +110,6 @@ class WBParse:
                                 break
                         else:
                             print("Коэффициент не найден")
-
-
                 except Exception as e:
                     continue
         except:
