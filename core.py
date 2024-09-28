@@ -93,11 +93,8 @@ class WBParse:
                         button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
                         self.action.move_to_element(button_hover)
                         self.action.perform()
-                        WebDriverWait(self.driver, 10).until(
-                            EC.element_to_be_clickable(
-                                (By.CSS_SELECTOR, 'div.Mobile-calendar-cell__button-container__W5vPcaL2M- button'))
-                        ).click()
-                        time.sleep(3)
+                        sleep(2)
+                        button_hover.click()
                         break
                     else:
                         if '✕' in coefficient_text:
