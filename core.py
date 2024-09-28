@@ -69,6 +69,8 @@ class WBParse:
                         break
                     else:
                         continue
+                else:
+                    tickets.delete(id.text.strip())
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
