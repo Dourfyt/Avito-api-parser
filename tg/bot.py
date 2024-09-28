@@ -9,6 +9,8 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 import os
+from multiprocessing import Process
+from core import main
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_path = os.path.join(parent_dir, 'config.ini')
@@ -26,7 +28,6 @@ class Tickets(StatesGroup):
 async def cmd_start(message: types.Message, state: FSMContext):
     await message.answer("Здравствуйте, я бот для работы с заявка WB! Введите номер заявки.")
     await state.set_state(Tickets.add_ticket)
-    file.delete("29356574")
 
 @dp.message(Tickets.add_ticket, F.text)
 async def add_ticket(message: types.Message, state: FSMContext):
@@ -36,6 +37,27 @@ async def add_ticket(message: types.Message, state: FSMContext):
 @dp.message(Tickets.add_ticket)
 async def wrong_ticket(message: types.Message, state: FSMContext):
     await message.answer("Неправильный формат заявки, попробуйте еще раз")
+
+@dp.message(Command('run'))
+async def run(message: types.Message, state: FSMContext):
+    global p1
+    p1 = Process(target=main, daemon=True)
+    p1.start()
+    p1.join()
+    await message.answer("Запущен")
+
+@dp.message(Command('stop'))
+async def stop(message: types.Message, state: FSMContext):
+    p1.close()
+    await message.answer("Отключен")
+
+@dp.message(Command('refresh'))
+async def stop(message: types.Message, state: FSMContext):
+    p1.close()
+    p1.start()
+    p1.join()
+    await message.answer("Перезагружен")
+
 
 async def log_tg(text):
     await bot.send_message(chat_id=config["BOT"]["PERSON"], text=text)

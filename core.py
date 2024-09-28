@@ -44,10 +44,8 @@ class WBParse:
         """Парсит открытую страницу"""
         time.sleep(1)
         try:
-            # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
-                    # Очищаем каждый ID от лишних пробелов и символов
                     self.tickets_list = list(map(str.rstrip, file.readlines()))
             else:
                 self.tickets_list = []
