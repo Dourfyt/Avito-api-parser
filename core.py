@@ -45,14 +45,13 @@ class WBParse:
             else:
                 with open('tg/tickets.txt', 'w') as file:
                     self.tickets_list = []
-            navigator = self.driver.find_element(*Locator.NAVIGATOR)
+
+            navigator = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located(Locator.NAVIGATOR))
             self.action.move_to_element(navigator)
             self.action.perform()
-            WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable(Locator.LI_NAVIGATOR)
-                ).click()
-            rows = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_all_elements_located(Locator.ROWS))
+            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
+            rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
             for row in rows:
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
@@ -77,11 +76,9 @@ class WBParse:
 
     def __parse_full_page(self, url: str, data: dict = {}) -> dict:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
-        time.sleep(1)
         try:
-            self.driver.find_element(*Locator.PLAN).click()
-            time.sleep(2)
-            cells = self.driver.find_elements(*Locator.CELLS_TABLE)
+            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
+            cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             for cell in cells:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
