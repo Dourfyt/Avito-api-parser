@@ -82,10 +82,10 @@ class WBParse:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         time.sleep(1)
         try:
-            self.driver.find_element(*Locator.PLAN[1]).click()
-            cells = self.driver.find_elements(Locator.ROW_TABLE[1], by="css selector")
+            self.driver.find_element(*Locator.PLAN).click()
+            cells = self.driver.find_elements(Locator.ROW_TABLE, by="css selector")
             for cell in cells:
-                if cell.find_element(*Locator.RATE[1]).text == "Бесплатно" or cell.find_element(Locator.RATE_X[1]).text == "x1":
+                if cell.find_element(*Locator.RATE).text == "Бесплатно" or cell.find_element(Locator.RATE_X[1]).text == "x1":
                     print("Найдено")
                 else:
                     print("Не найдено")
