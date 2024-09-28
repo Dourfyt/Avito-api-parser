@@ -49,10 +49,10 @@ class WBParse:
             self.action.move_to_element(navigator)
             self.action.perform()
             WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable(*Locator.LI_NAVIGATOR)
+                EC.element_to_be_clickable(Locator.LI_NAVIGATOR)
                 ).click()
             rows = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_all_elements_located(*Locator.ROWS))
+            EC.visibility_of_all_elements_located(Locator.ROWS))
             for row in rows:
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
