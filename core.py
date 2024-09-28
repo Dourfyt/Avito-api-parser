@@ -104,10 +104,13 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                            print("SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                            print(
+                                "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                     else:
                         if '✕' in coefficient_text:
@@ -120,10 +123,14 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    print(
+                                        "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    print(
+                                        "SAFAKSFJFLKSAJAKSLJ FJSAKH SKAJHF HJKAS JHASFASJHB SA FJBHKSAF JVBHSAF JHVB\n\n\nsadSAFASFASF")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                                     return
                         else:
