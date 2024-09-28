@@ -85,6 +85,7 @@ class WBParse:
             for ticket in self.tickets_list:
                 if ticket not in ids:
                     tickets.delete(ticket)
+                    print(f"{ticket} удален в цикле")
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
