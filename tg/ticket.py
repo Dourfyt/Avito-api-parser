@@ -41,16 +41,16 @@ class File:
     def delete(self, text):
         """Удалить строку"""
         found = False
+        text = str(text).strip()  # Удаляем пробелы и символы новой строки у текста
         with open(self.filename, "r") as f:
             lines = f.readlines()
 
         with open(self.filename, "w") as f:
             for line in lines:
-                if line.strip("\n") != text:
+                if line.strip() != text:  # Удаляем пробелы и символы новой строки у строки файла
                     f.write(line)
                 else:
                     found = True
 
         if not found:
             return "Данная строка не найдена"
-
