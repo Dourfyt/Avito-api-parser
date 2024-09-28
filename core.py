@@ -95,12 +95,9 @@ class WBParse:
                             self.action.move_to_element(button_hover)
                             self.action.perform()
                             time.sleep(1)
-                            self.action.click()
-                            self.action.perform()
-                            self.action.click()
-                            self.action.perform()
-                            self.action.click()
-                            self.action.perform()
+                            WebDriverWait(self.driver, 10).until(
+                                EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
+                            ).click()
                             return
                         except Exception as e:
                             print(e)
