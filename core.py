@@ -46,8 +46,7 @@ class WBParse:
                 with open('tg/tickets.txt', 'w') as file:
                     self.tickets_list = []
 
-            navigator = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located(Locator.NAVIGATOR))
+            navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
             self.action.move_to_element(navigator)
             self.action.perform()
             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
