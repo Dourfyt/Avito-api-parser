@@ -81,7 +81,7 @@ class WBParse:
         coef = data.get('coefficient')
         date = data.get('date')
         message = f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}'
-        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
+        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F"
         requests.get(url)
 
 
