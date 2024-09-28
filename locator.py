@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 class Locator:
     """Все необходимые селекторы"""
     ID = (By.CSS_SELECTOR, "[id='preorderID']")
-    ROWS = (By.XPATH, '//*[@id="preorderID"]/div/span')
+    ROWS = (By.CSS_SELECTOR, "div.All-supplies-table-row__C6iU8GGIHd[role='button'][tabindex='0']")
     STATUS = (By.CSS_SELECTOR, "[data-name='Badge']")
     PLAN = (By.CSS_SELECTOR, ".caption_kqFcIewCT5")
     CONFIRM = (By.CSS_SELECTOR, '')
