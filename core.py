@@ -105,11 +105,14 @@ class WBParse:
                             time.sleep(1)
                             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            return True
+                            return
                         except Exception as e:
+                            self.action.move_to_element(button_hover)
+                            self.action.perform()
                             WebDriverWait(self.driver, 10).until(
                                 EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            return
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -122,8 +125,10 @@ class WBParse:
                                     time.sleep(1)
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
-                                    return True
+                                    return
                                 except Exception as e:
+                                    self.action.move_to_element(button_hover)
+                                    self.action.perform()
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                                     return
@@ -133,7 +138,7 @@ class WBParse:
                     continue
         except:
             pass
-        return False
+        return
 
     def is_tickets(self, id: str) -> bool:
         if id == self.tickets_list[-1]:
