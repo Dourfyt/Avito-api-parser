@@ -7,6 +7,8 @@ from loguru import logger
 from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from locator import Locator
 import configparser
 import json
@@ -46,9 +48,9 @@ class WBParse:
             navigator = self.driver.find_element(*Locator.NAVIGATOR)
             self.action.move_to_element(navigator)
             self.action.perform()
-            print(navigator)
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
-            time.sleep(2)
+            wait = WebDriverWait(self.driver, 10)
+            element = wait.until(EC.element_to_be_clickable((Locator.ROWS)))
             titles = self.driver.find_elements(*Locator.ROWS)
             print(titles)
             for title in titles:
