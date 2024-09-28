@@ -68,6 +68,7 @@ class WBParse:
                     if self.is_tickets(id.text.strip()):
                         id.click()
                         self.__parse_full_page(id)
+                        break
                     else:
                         continue
         except Exception as e:
