@@ -89,7 +89,8 @@ class WBParse:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
             time.sleep(1)
-            id_ticket = self.driver.find_element(By.CSS_SELECTOR, "div.Modal__title__YyPPzEhI7r span")
+            id_ticket = self.driver.find_element(By.CSS_SELECTOR, "div.Modal__title__YyPPzEhI7r")
+            print(id_ticket)
             id_ticket=id_ticket.text
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
