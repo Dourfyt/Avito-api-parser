@@ -32,7 +32,7 @@ class WBParse:
 
     def __get_url(self):
         self.driver.get(self.url)
-        time.sleep(15)
+        time.sleep(5)
         
     @logger.catch
     def __parse_page(self):
@@ -49,7 +49,7 @@ class WBParse:
             self.action.move_to_element(navigator)
             self.action.perform()
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
-            time.sleep(7)
+            time.sleep(3)
             rows = self.driver.find_elements(*Locator.ROWS)
             time.sleep(2)
             for row in rows:
@@ -86,7 +86,7 @@ class WBParse:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
-                    coefficient_number = cell.driver.find_element(By.CSS_SELECTOR,"span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0")
+                    coefficient_number = cell.find_element(By.CSS_SELECTOR,"span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0")
                     coefficient_free = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--successTextColor__FYCniHMfGu.Text--textDecoration-none__rkxLphaqR0")
                     print(coefficient_free.text, coefficient_number.text)
                     if coefficient_free.text.strip().lower() == "бесплатно" or coefficient_number.text.strip() == "1":
@@ -139,7 +139,7 @@ def main():
 
                     driver.parse()
                     logger.info(f"Завершен парсинг для URL: {url}")
-                    time.sleep(10)
+                    time.sleep(3)
                 except Exception as error:
                     logger.error(f"Ошибка при парсинге URL {url}: {error}")
                     logger.error('Произошла ошибка, но работа будет продолжена через 30 сек. '
@@ -147,7 +147,7 @@ def main():
                                 'Если и это не поможет - обратитесь к разработчику по ссылке ниже')
 
                 logger.info("Пауза перед следующим циклом")
-                time.sleep(10)
+                time.sleep(3)
     except Exception as e:
         logger.error(f"Ошибка при создании браузера: {e}")
 
