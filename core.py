@@ -59,6 +59,7 @@ class WBParse:
                 status = str(row.find_element(*Locator.STATUS).text)
                 print(status)
                 if id.text and status.lower() == "не запланировано":
+                    print("YESYESYES")
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
