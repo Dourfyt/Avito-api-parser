@@ -79,8 +79,7 @@ class WBParse:
         """Красивый вывод"""
         try:
             coef = data.get('coefficient')
-            date = data.get('date')
-            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef}')
         except Exception as e:
             print(e)
 
@@ -104,11 +103,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            self.__pretty_log({'coefficient': coefficient_value})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            self.__pretty_log({'coefficient': coefficient_value})
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
