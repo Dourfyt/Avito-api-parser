@@ -66,9 +66,8 @@ class WBParse:
                     if self.is_tickets(id.text.strip()):
                         id_ticket = id
                         id.click()
-                        if self.__parse_full_page(id):
-                            tickets.delete(id_ticket.text.strip())
-                            break
+                        self.__parse_full_page(id)
+                        break
                     else:
                         continue
         except Exception as e:
@@ -81,6 +80,7 @@ class WBParse:
             date = data.get('date')
             id_ticket = data.get('id_ticket')
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
+            tickets.delete(id_ticket.text.strip())
         except Exception as e:
             print(e)
 
