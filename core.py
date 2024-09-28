@@ -50,15 +50,14 @@ class WBParse:
             self.action.perform()
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             time.sleep(7)
-            titles = self.driver.find_elements(*Locator.ROWS)
+            rows = self.driver.find_elements(*Locator.ROWS)
             time.sleep(2)
-            print(titles)
-            for title in titles:
+            for row in rows:
 
-                id = title.find_element(*Locator.ID)
-                status = title.find_element(*Locator.STATUS).text
+                id = row.find_element(*Locator.ID)
+                status = str(row.find_element(*Locator.STATUS).text)
 
-                if id and status == "Не запланировано":
+                if id.text and status.lower() == "не запланировано":
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))

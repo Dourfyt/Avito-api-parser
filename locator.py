@@ -3,9 +3,9 @@ from selenium.webdriver.common.by import By
 
 class Locator:
     """Все необходимые селекторы"""
-    ID = (By.CSS_SELECTOR, "[id='preorderID']")
+    ID = (By.CSS_SELECTOR, "span.Text__jKJsQramuu[data-name='Text']")
     ROWS = (By.CSS_SELECTOR, "div.All-supplies-table-row__C6iU8GGIHd[role='button'][tabindex='0']")
-    STATUS = (By.CSS_SELECTOR, "[data-name='Badge']")
+    STATUS = (By.CSS_SELECTOR, "span.Badge__qTItng6q8g[data-name='Badge']")
     PLAN = (By.CSS_SELECTOR, ".caption_kqFcIewCT5")
     CONFIRM = (By.CSS_SELECTOR, '')
     CANCEL = (By.CSS_SELECTOR, '.Calendar-plan-buttons--cancel__bMSoh-OauP')
