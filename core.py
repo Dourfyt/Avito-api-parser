@@ -102,7 +102,8 @@ class WBParse:
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
-
+                            WebDriverWait(self.driver, 10).until(
+                                EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
