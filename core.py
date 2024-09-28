@@ -15,7 +15,6 @@ import json
 from tg.ticket import File
 
 SUCCESS = 25
-logger.level("SUCCESS", no=SUCCESS, color="<green>")
 
 class NotificationHandler:
     def __init__(self, service_name, defaults=None):
