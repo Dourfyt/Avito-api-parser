@@ -79,6 +79,7 @@ class WBParse:
             coef = data.get('coefficient')
             date = data.get('date')
             id_ticket = data.get('id_ticket')
+            print(id_ticket)
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
             tickets.delete(str(id_ticket.strip()))
         except Exception as e:
