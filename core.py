@@ -88,7 +88,7 @@ class WBParse:
                         break
                 else:
                     continue
-
+            print((found_ids, self.tickets_list))
             # Удаляем из tickets_list те ID, которых нет на странице
             self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in found_ids]
 
