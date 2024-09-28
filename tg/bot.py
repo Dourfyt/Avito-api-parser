@@ -10,7 +10,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 import os
 from multiprocessing import Process
-from core import main
+from ..core import main
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_path = os.path.join(parent_dir, 'config.ini')
