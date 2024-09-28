@@ -94,7 +94,7 @@ class WBParse:
             for cell in cells:
                 try:
                     current_url = str(self.driver.current_url)
-                    id_ticket = current_url.split("&")[-2]
+                    id_ticket = current_url.split("&")[-2].split("=")[-1]
                     print(id_ticket)
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
