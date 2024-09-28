@@ -64,7 +64,6 @@ class WBParse:
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
                     if self.is_tickets(id.text.strip()):
-                        id_ticket = id
                         id.click()
                         self.__parse_full_page(id)
                         break
@@ -79,7 +78,7 @@ class WBParse:
             coef = data.get('coefficient')
             date = data.get('date')
             id_ticket = data.get('id_ticket')
-            print(id_ticket)
+            print(f"Ticket ID для удаления: {id_ticket}")
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
             tickets.delete(str(id_ticket.strip()))
         except Exception as e:
