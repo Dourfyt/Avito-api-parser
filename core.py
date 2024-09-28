@@ -100,7 +100,6 @@ class WBParse:
         except Exception as e:
             print(e)
 
-
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
@@ -109,48 +108,59 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
+
             for cell in cells:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
+                    coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
 
                     if "Бесплатно" in coefficient_text:
                         coefficient_value = "Бесплатно"
-                        button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
+                        button_hover = cell.find_element(By.CSS_SELECTOR,
+                                                         'div.Calendar-cell__button-container__ANliSQlw9D')
+
+                        # Перемещение курсора на кнопку
+                        self.action.move_to_element(button_hover).perform()
+                        time.sleep(1)
+
+                        # Клик только при успешном нахождении элемента
                         try:
-                            self.action.move_to_element(button_hover)
-                            self.action.perform()
-                            time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
+                            self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
-                            cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
+                            print(f"Error clicking 'Выбрать': {e}")
+
+                    elif '✕' in coefficient_text:
+                        coefficient_value = coefficient_text.split('✕')[1].strip()
+                        if coefficient_value == "1":
+                            button_hover = cell.find_element(By.CSS_SELECTOR,
+                                                             'div.Calendar-cell__button-container__ANliSQlw9D')
+
+                            # Перемещение курсора на кнопку
+                            self.action.move_to_element(button_hover).perform()
+                            time.sleep(1)
+
+                            # Клик только при успешном нахождении элемента
+                            try:
+                                cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                self.__pretty_log(
+                                    {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date})
+                                return True
+                            except Exception as e:
+                                print(f"Error clicking 'Выбрать': {e}")
+
                     else:
-                        if '✕' in coefficient_text:
-                            coefficient_value = coefficient_text.split('✕')[1].strip()
-                            date = cell.find_element(By.CSS_SELECTOR,"div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                            if coefficient_value == "1":
-                                button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
-                                try:
-                                    self.action.move_to_element(button_hover)
-                                    self.action.perform()
-                                    time.sleep(1)
-                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
-                                    return True
-                                except Exception as e:
-                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
-                                    return
-                        else:
-                            print("Коэффициент не найден")
+                        print("Коэффициент не найден")
+
                 except Exception as e:
+                    print(f"Ошибка: {e}")
                     continue
-        except:
-            pass
+
+        except Exception as e:
+            print(f"Ошибка: {e}")
+
         return False
 
     def is_tickets(self, id: str) -> bool:
