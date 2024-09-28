@@ -92,7 +92,12 @@ class WBParse:
             for cell in cells:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
+                    if not hasattr(cell, '_coefficient_element'):
+                        coefficient_element = cell.find_element(By.CSS_SELECTOR,
+                                                                "div.Coefficient-table-cell__EqV0w0Bye8")
+                        cell._coefficient_element = coefficient_element  # Кэшируем элемент
+
+                    coefficient_element = cell._coefficient_element
                     coefficient_text = coefficient_element.text
 
                     if "Бесплатно" in coefficient_text:
