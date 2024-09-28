@@ -83,9 +83,9 @@ class WBParse:
         time.sleep(1)
         try:
             self.driver.find_element(*Locator.PLAN).click()
-            cells = self.driver.find_elements(Locator.ROW_TABLE, by="css selector")
+            cells = self.driver.find_elements(*Locator.CELLS_TABLE)
             for cell in cells:
-                if cell.find_element(*Locator.RATE).text == "Бесплатно" or cell.find_element(Locator.RATE_X[1]).text == "x1":
+                if cell.find_element(*Locator.RATE).text == "Бесплатно" or cell.find_element(*Locator.RATE_X).text == "x1":
                     print("Найдено")
                 else:
                     print("Не найдено")
