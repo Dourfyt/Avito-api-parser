@@ -46,8 +46,8 @@ async def list(message: types.Message, state: FSMContext):
 async def run(message: types.Message, state: FSMContext):
     global p1
     p1 = Process(target=main, daemon=True)
-    p1.start()
-    p1.join()
+    await p1.start()
+    await p1.join()
     await message.answer("Запущен")
 
 @dp.message(Command('stop'))
