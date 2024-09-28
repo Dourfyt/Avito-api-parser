@@ -32,11 +32,16 @@ async def cmd_start(message: types.Message, state: FSMContext):
 @dp.message(Tickets.add_ticket, F.text)
 async def add_ticket(message: types.Message, state: FSMContext):
     file.add(message)
+    await state.clear()
     await message.answer(file.get_first())
 
 @dp.message(Tickets.add_ticket)
 async def wrong_ticket(message: types.Message, state: FSMContext):
     await message.answer("Неправильный формат заявки, попробуйте еще раз")
+
+@dp.message(Command('list'))
+async def list(message: types.Message, state: FSMContext):
+    await message.answer(file.show())
 
 @dp.message(Command('run'))
 async def run(message: types.Message, state: FSMContext):
