@@ -101,7 +101,7 @@ class WBParse:
         return data
 
     def is_tickets(self, id: str) -> bool:
-        if id == self.tickets_list[-1][0]:
+        if id == self.tickets_list[-1]:
             return True
         return False
 
