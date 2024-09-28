@@ -85,9 +85,10 @@ class WBParse:
             self.driver.find_element(*Locator.PLAN).click()
             time.sleep(2)
             cells = self.driver.find_elements(*Locator.CELLS_TABLE)
-            print(cells)
             for cell in cells:
-                if cell.find_element(*Locator.RATE).text == "Бесплатно" or cell.find_element(*Locator.RATE_X).text == "x1":
+                coef = cell.find_element(*Locator.RATE).text
+                coef2 = cell.find_element(*Locator.RATE_X).text
+                if coef == "Бесплатно" or coef2 == "x1":
                     print("Найдено")
                 else:
                     print("Не найдено")
