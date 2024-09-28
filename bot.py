@@ -12,11 +12,10 @@ import os
 from multiprocessing import Process
 from core import main
 
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-config_path = os.path.join(parent_dir, 'config.ini')
+
 logging.basicConfig(level=logging.INFO)
 config = configparser.ConfigParser()
-config.read(config_path)
+config.read('config.ini')
 bot = Bot(token=config['BOT']["token"])
 dp = Dispatcher(storage=MemoryStorage())
 file = tg.ticket.File('tg/tickets')
