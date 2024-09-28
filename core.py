@@ -101,11 +101,13 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                            print("ugu")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             print("aga")
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                            print("ugu")
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             print("aga")
                     else:
@@ -119,11 +121,13 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    print("ugu")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
                                     print("aga")
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    print("ugu")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                                     print("aga")
                                     return
