@@ -190,7 +190,7 @@ class WBParse:
         except Exception as error:
             print(f"Ошибка при обработке: {error}")
 
-def main():
+async def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
     options = webdriver.ChromeOptions()
     options.add_argument(r'user-data-dir=usr\bin\User Data')
