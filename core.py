@@ -50,7 +50,7 @@ class WBParse:
             self.action.perform()
             self.driver.find_element(*Locator.LI_NAVIGATOR).click()
             wait = WebDriverWait(self.driver, 10)
-            element = wait.until(EC.visibility_of_element_located(By.CSS_SELECTOR, "All-suplies-table-row__C6iU8GGIhd"))
+            element = wait.until(EC.visibility_of_element_located((Locator.ROWS)))
             titles = self.driver.find_elements(*Locator.ROWS)
             print(titles)
             for title in titles:
