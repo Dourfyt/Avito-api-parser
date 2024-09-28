@@ -56,16 +56,12 @@ class WBParse:
 
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
-                print(status)
                 if id.text and status.lower() == "не запланировано":
-                    print("YESYESYES")
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
-                    print(self.tickets_list)
-                    print(id.text.strip())
                     if self.is_tickets(id.text.strip()):
                         id.click()
                         self.__parse_full_page(id)
@@ -90,7 +86,8 @@ class WBParse:
                 date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                 type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
                 coefficient = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0").text.strip()
-                if coefficient == "Бесплатно" or coefficient == "x1":
+                print(coefficient)
+                if coefficient.lower() == "бесплатно" or coefficient == "x1":
                     print("Найдено")
                 else:
                     print("Не найдено")
