@@ -79,7 +79,8 @@ class WBParse:
         try:
             coef = data.get('coefficient')
             date = data.get('date')
-            logger.success(f'Статус заявки изменен на "запланирован" с коэффициентом {coef} | {date}')
+            id_ticket = data.get('id_ticket')
+            logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
         except Exception as e:
             print(e)
 
@@ -92,6 +93,9 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             for cell in cells:
                 try:
+                    current_url = str(self.driver.current_url)
+                    id_ticket = current_url.split("&")[-2]
+                    print(id_ticket)
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
@@ -104,11 +108,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                            self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                            self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -120,11 +124,11 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    self.__pretty_log({"id_ticket":id_ticket,'coefficient': coefficient_value, 'date':date})
                                     return
                         else:
                             print("Коэффициент не найден")
