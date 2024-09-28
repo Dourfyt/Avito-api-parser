@@ -78,8 +78,7 @@ class WBParse:
     def __pretty_log(self, data):
         """Красивый вывод"""
         try:
-            coef = data.get('coefficient')
-            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef}')
+            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован"')
         except Exception as e:
             print(e)
 
@@ -92,12 +91,7 @@ class WBParse:
             for cell in cells:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                    if not hasattr(cell, '_coefficient_element'):
-                        coefficient_element = cell.find_element(By.CSS_SELECTOR,
-                                                                "div.Coefficient-table-cell__EqV0w0Bye8")
-                        cell._coefficient_element = coefficient_element  # Кэшируем элемент
-
-                    coefficient_element = cell._coefficient_element
+                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
 
                     if "Бесплатно" in coefficient_text:
@@ -108,11 +102,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_text})
+                            self.__pretty_log()
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_text})
+                            self.__pretty_log()
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
