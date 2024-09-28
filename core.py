@@ -87,7 +87,6 @@ class WBParse:
 
                         # Парсим полную страницу
                         self.__parse_full_page(id_text)
-                        break
                 else:
                     continue
 
