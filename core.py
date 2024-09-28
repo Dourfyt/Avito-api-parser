@@ -12,10 +12,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from locator import Locator
 import configparser
 import json
+from tg.ticket import File
 
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
+tickets = File("tickets.txt")
 
 class WBParse:
 
@@ -61,11 +63,12 @@ class WBParse:
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
                     if self.is_tickets(id.text.strip()):
-                        global id
-                        id = id
+                        global id_ticket
+                        id_ticket = id
                         id.click()
-                        self.__parse_full_page(id)
-                        break
+                        if self.__parse_full_page(id):
+                            tickets.delete()
+                            break
                     else:
                         continue
         except Exception as e:
@@ -75,7 +78,7 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.success(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""

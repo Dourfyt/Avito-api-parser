@@ -8,11 +8,13 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
+import os
 
-
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+config_path = os.path.join(parent_dir, 'config.ini')
 logging.basicConfig(level=logging.INFO)
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(config_path)
 bot = Bot(token=config['BOT']["token"])
 dp = Dispatcher(storage=MemoryStorage())
 file = ticket.File('tickets')
@@ -24,6 +26,7 @@ class Tickets(StatesGroup):
 async def cmd_start(message: types.Message, state: FSMContext):
     await message.answer("Здравствуйте, я бот для работы с заявка WB! Введите номер заявки.")
     await state.set_state(Tickets.add_ticket)
+    file.delete("29356574")
 
 @dp.message(Tickets.add_ticket, F.text)
 async def add_ticket(message: types.Message, state: FSMContext):

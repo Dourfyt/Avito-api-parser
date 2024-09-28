@@ -38,12 +38,19 @@ class File:
             for line in lines[1:]:
                     f.write(line)
 
-    def delete(self, message):
+    def delete(self, text):
         """Удалить строку"""
+        found = False
         with open(self.filename, "r") as f:
             lines = f.readlines()
+
         with open(self.filename, "w") as f:
             for line in lines:
-                if line.strip("\n") != message.text:
+                if line.strip("\n") != text:
                     f.write(line)
-                else: return "Данная строка не найдена"
+                else:
+                    found = True
+
+        if not found:
+            return "Данная строка не найдена"
+
