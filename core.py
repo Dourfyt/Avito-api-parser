@@ -13,6 +13,7 @@ from locator import Locator
 import configparser
 import json
 from tg.ticket import File
+from tg.bot import log_tg
 
 SUCCESS = 25
 
@@ -92,7 +93,7 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.add(SUCCESS, f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        log_tg(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""

@@ -36,6 +36,9 @@ async def add_ticket(message: types.Message, state: FSMContext):
 @dp.message(Tickets.add_ticket)
 async def wrong_ticket(message: types.Message, state: FSMContext):
     await message.answer("Неправильный формат заявки, попробуйте еще раз")
+
+async def log_tg(text):
+    await bot.send_message(chat_id=config["BOT"]["PERSON"], text=text)
     
 
 async def main():
