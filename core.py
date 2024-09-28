@@ -69,8 +69,10 @@ class WBParse:
         except Exception as e:
             logger.error(f"Ошибка при обработке: {e}")
 
-    def __pretty_log(self, id):
+    def __pretty_log(self, data):
         """Красивый вывод"""
+        coef = data.get('coefficient')
+        date = data.get('date')
         logger.success(f'Статус заявки {id} изменен')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> dict:
@@ -83,6 +85,7 @@ class WBParse:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
+
                     if "Бесплатно" in coefficient_text:
                         coefficient_value = "Бесплатно"
                         button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
@@ -92,13 +95,15 @@ class WBParse:
                             time.sleep(1)
                             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
                             ).click()
-                            return {'coefficient': coefficient_value, 'date':date,}
+                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                            return {'coefficient': coefficient_value, 'date':date}
                         except Exception as e:
                             print(e)
                             continue
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
+                            date = cell.find_element(By.CSS_SELECTOR,"div.Calendar-cell__date-container__2TUSaIwaeG span").text
                             if coefficient_value == "1":
                                 button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
                                 try:
@@ -107,7 +112,9 @@ class WBParse:
                                     time.sleep(1)
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
                                     ).click()
-                                    return
+                                    self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    return {'coefficient': coefficient_value, 'date':date}
+
                                 except Exception as e:
                                     print(e)
                                     continue
@@ -117,8 +124,6 @@ class WBParse:
                     continue
         except:
             pass
-
-        return data
 
     def is_tickets(self, id: str) -> bool:
         if id == self.tickets_list[-1]:
