@@ -157,6 +157,10 @@ def main():
     options.add_argument('--profile-directory=Profile 1')
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    token = config["BOT"]["TOKEN"]
+    chat_id = config["BOT"]["PERSON"]
+    url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F"
+    requests.get(url)
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
