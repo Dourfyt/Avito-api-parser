@@ -80,6 +80,7 @@ class WBParse:
         date = data.get('date')
         logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
+    @logger.catch
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
@@ -157,7 +158,7 @@ def main():
     if token and person:
         params = {
             'token': token,
-            'chat_id': int(person)
+            'chat_id': person
         }
         tg_handler = NotificationHandler("telegram", defaults=params)
         logger.add(tg_handler, level="SUCCESS", format="{message}")
