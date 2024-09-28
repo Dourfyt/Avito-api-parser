@@ -90,7 +90,7 @@ class WBParse:
                     coefficient_text = coefficient_element.text
                     if "Бесплатно" in coefficient_text:
                         coefficient_value = "Бесплатно"
-                        button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
+                        button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Mobile-calendar-cell__button-container__W5vPcaL2M- button')
                         self.action.move_to_element(button_hover)
                         self.action.perform()
                         try:
