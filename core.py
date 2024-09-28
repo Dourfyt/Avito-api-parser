@@ -86,16 +86,22 @@ class WBParse:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
-                    coefficient_number = cell.find_element(By.CSS_SELECTOR,"span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0")
-                    coefficient_free = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--successTextColor__FYCniHMfGu.Text--textDecoration-none__rkxLphaqR0")
-                    print(coefficient_free.text, coefficient_number.text)
+                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-block__coefficient-text")
+                    coefficient_text = coefficient_element.text
+
+                    # Извлекаем число после символа "✕"
+                    if '✕' in coefficient_text:
+                        coefficient_number = coefficient_text.split('✕')[1].strip()  # Извлекаем все после "✕" и убираем лишние пробелы
+                        print(f"Коэффициент: {coefficient_number}")
+                    else:
+                        print(f"Коэффициент не найден {coefficient_number}")
+
                     if coefficient_free.text.strip().lower() == "бесплатно" or coefficient_number.text.strip() == "1":
                         print("Найдено")
                     else:
                         print("Не найдено")
                         continue
                 except Exception as e:
-                    logger.error(e)
                     continue
         except:
             pass
