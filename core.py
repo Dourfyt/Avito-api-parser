@@ -37,17 +37,20 @@ class WBParse:
         self.driver.get(self.url)
         time.sleep(5)
 
+    import os
+
     @logger.catch
     def __parse_page(self):
         """Парсит открытую страницу"""
         time.sleep(1)
         try:
+            # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
+                    # Очищаем каждый ID от лишних пробелов и символов
                     self.tickets_list = list(map(str.rstrip, file.readlines()))
             else:
-                with open('tg/tickets.txt', 'w') as file:
-                    self.tickets_list = []
+                self.tickets_list = []
 
             navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
             self.action.move_to_element(navigator)
@@ -62,31 +65,39 @@ class WBParse:
                 if option.text == "100":
                     option.click()
             time.sleep(1)
+
+            # Парсим строки на странице
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
-            ids = []
+
+            # Собираем ID, которые найдены на странице
+            found_ids = []
+
             for row in rows:
-                id = row.find_element(*Locator.ID)
-                status = str(row.find_element(*Locator.STATUS).text)
-                if id.text and status.lower() == "не запланировано":
-                    if os.path.isfile('tg/tickets.txt'):
-                        with open('tg/tickets.txt', 'r') as file:
-                            self.tickets_list = list(map(str.rstrip, file.readlines()))
-                            if len(self.tickets_list) > 5000:
-                                self.tickets_list = self.tickets_list[-900:]
-                    if self.is_tickets(id.text.strip()):
-                        id.click()
-                        self.__parse_full_page(id)
+                id_element = row.find_element(*Locator.ID)
+                id_text = id_element.text.strip()  # Убираем пробелы
+                status = str(row.find_element(*Locator.STATUS).text).lower()
+
+                if id_text and status == "не запланировано":
+                    found_ids.append(id_text)
+
+                    # Проверяем, что ID уже есть в tickets_list
+                    if id_text in self.tickets_list:
+                        # Если ID есть в списке, кликаем по нему
+                        id_element.click()
+
+                        # Парсим полную страницу
+                        self.__parse_full_page(id_text)
                         break
-                    else:
-                        ids.append(id.text.strip())
                 else:
                     continue
 
-            for ticket in self.tickets_list:
-                if ticket not in ids:
-                    print((self.tickets_list, ids))
-                    logger.info(f"{ticket} удален в цикле")
-                    tickets.delete(ticket)
+            # Удаляем из tickets_list те ID, которых нет на странице
+            self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in found_ids]
+
+            # Перезаписываем файл с актуальными ID
+            with open('tg/tickets.txt', 'w') as file:
+                for ticket_id in self.tickets_list:
+                    file.write(f"{ticket_id}\n")
 
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
