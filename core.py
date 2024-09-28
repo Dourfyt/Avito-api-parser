@@ -61,6 +61,8 @@ class WBParse:
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
                     if self.is_tickets(id.text.strip()):
+                        global id
+                        id = id
                         id.click()
                         self.__parse_full_page(id)
                         break
@@ -73,9 +75,9 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.success(f'Статус заявки {date} изменен на запланирован с коэффициентом {coef}')
+        logger.success(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
-    def __parse_full_page(self, url: str, data: dict = {}) -> dict:
+    def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
@@ -96,7 +98,7 @@ class WBParse:
                             WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
                             ).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            return {'coefficient': coefficient_value, 'date':date}
+                            return True
                         except Exception as e:
                             print(e)
                             continue
@@ -113,7 +115,7 @@ class WBParse:
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
                                     ).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
-                                    return {'coefficient': coefficient_value, 'date':date}
+                                    return True
 
                                 except Exception as e:
                                     print(e)
@@ -124,6 +126,7 @@ class WBParse:
                     continue
         except:
             pass
+        return False
 
     def is_tickets(self, id: str) -> bool:
         if id == self.tickets_list[-1]:
