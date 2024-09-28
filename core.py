@@ -61,7 +61,7 @@ class WBParse:
             for option in options:
                 if option.text == "100":
                     option.click()
-            time.sleep(1)
+            time.sleep(10)
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
             for row in rows:
                 id = row.find_element(*Locator.ID)
