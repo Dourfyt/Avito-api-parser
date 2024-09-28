@@ -42,7 +42,6 @@ class WBParse:
         """Парсит открытую страницу"""
         time.sleep(1)
         try:
-            # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
                     self.tickets_list = list(map(str.rstrip, file.readlines()))
@@ -63,41 +62,31 @@ class WBParse:
                 if option.text == "100":
                     option.click()
             time.sleep(1)
-
-            # Парсим строки на странице
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
-
-            # Для удаления ID из tickets.txt
-            ids_to_remove = []
-
+            ids = []
             for row in rows:
-                id = row.find_element(*Locator.ID).text.strip()
-                status = str(row.find_element(*Locator.STATUS).text).lower()
-
-                # Проверяем условие для удаления: id == "-" и статус не "не запланировано"
-                if id == "-" and status != "не запланировано":
-                    print(id,' К удалению')
-                    ids_to_remove.append(id)
-                    continue
-
-                # Остальная логика парсинга
-                if id and status == "не запланировано":
-                    print(id, "проходит")
+                id = row.find_element(*Locator.ID)
+                status = str(row.find_element(*Locator.STATUS).text)
+                if id.text and status.lower() == "не запланировано":
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
-                    if self.is_tickets(id):
+                    if self.is_tickets(id.text.strip()):
                         id.click()
                         self.__parse_full_page(id)
                         break
+                    else:
+                        ids.append(id.text.strip())
+                else:
+                    continue
 
-            if ids_to_remove:
-                self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id not in ids_to_remove]
-                with open('tg/tickets.txt', 'w') as file:
-                    for ticket_id in self.tickets_list:
-                        file.write(f"{ticket_id}\n")
+            for ticket in self.tickets_list:
+                if ticket not in ids:
+                    print((self.tickets_list, ids))
+                    logger.info(f"{ticket} удален в цикле")
+                    tickets.delete(ticket)
 
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
