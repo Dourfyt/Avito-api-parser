@@ -69,7 +69,7 @@ class WBParse:
 
             # Собираем ID, которые найдены на странице
             found_ids = []
-
+            print((found_ids, self.tickets_list))
             for row in rows:
                 id_element = row.find_element(*Locator.ID)
                 id_text = id_element.text.strip()  # Убираем пробелы
