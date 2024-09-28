@@ -81,7 +81,7 @@ class WBParse:
         coef = data.get('coefficient')
         date = data.get('date')
         message = f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}'
-        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F"
+        url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
         requests.get(url)
 
 
@@ -103,20 +103,12 @@ class WBParse:
                             self.action.move_to_element(button_hover)
                             self.action.perform()
                             time.sleep(1)
-                            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                            cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            print(
-                                "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
-                            return
+                            return True
                         except Exception as e:
-                            self.action.move_to_element(button_hover)
-                            self.action.perform()
-                            WebDriverWait(self.driver, 10).until(
-                                EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                            cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            print(
-                                "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
-                            return
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -127,17 +119,12 @@ class WBParse:
                                     self.action.move_to_element(button_hover)
                                     self.action.perform()
                                     time.sleep(1)
-                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
-                                    print("saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
-                                    return
+                                    return True
                                 except Exception as e:
-                                    self.action.move_to_element(button_hover)
-                                    self.action.perform()
-                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                                    print(
-                                        "saJKFnSAKHHFBNJFBASJKHFBVNDJBVJDSBVJKNDSBFJHBAFJHASDFGWASHGFASHJFHJGASFHJGASFGHJSAFJGHSAFASFGHJASFJGHSFAJKGHVASFJGHKSAFJGHK")
                                     return
                         else:
                             print("Коэффициент не найден")
@@ -145,7 +132,7 @@ class WBParse:
                     continue
         except:
             pass
-        return
+        return False
 
     def is_tickets(self, id: str) -> bool:
         if id == self.tickets_list[-1]:
@@ -169,9 +156,6 @@ def main():
     options.add_argument('--profile-directory=Profile 1')
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    token = config["BOT"]["TOKEN"]
-    chat_id = config["BOT"]["PERSON"]
-    requests.get(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text=F")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
