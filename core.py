@@ -13,22 +13,7 @@ from locator import Locator
 import configparser
 import json
 from tg.ticket import File
-from tg.bot import log_tg
 
-SUCCESS = 25
-
-class NotificationHandler:
-    def __init__(self, service_name, defaults=None):
-        self.service_name = service_name
-        self.defaults = defaults
-
-    def send_notification(self, message):
-        # Логика отправки уведомления
-        print(f"[{self.service_name}] Отправлено уведомление: {message}")
-
-    def handle(self, message, level):
-        if level == SUCCESS:
-            self.send_notification(message)
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
@@ -87,13 +72,13 @@ class WBParse:
                     else:
                         continue
         except Exception as e:
-            logger.error(f"Ошибка при обработке: {e}")
+            print(f"Ошибка при обработке: {e}")
 
     def __pretty_log(self, data):
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        log_tg(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
@@ -159,7 +144,7 @@ class WBParse:
             self.__parse_page()
             logger.info(f"Парсинг завершен")
         except Exception as error:
-            logger.error(f"Ошибка при обработке: {error}")
+            print(f"Ошибка при обработке: {error}")
 
 def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
@@ -176,7 +161,7 @@ def main():
             'chat_id': person
         }
         tg_handler = NotificationHandler("telegram", defaults=params)
-        logger.add(lambda msg: tg_handler.handle(msg, msg.level.name), level="SUCCESS")
+        logger.add(tg_handler, level="SUCCESS", format="{message}")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
@@ -190,12 +175,12 @@ def main():
                     driver.parse()
                     logger.info(f"Завершен парсинг для URL: {url}")
                 except Exception as error:
-                    logger.error(f"Ошибка при парсинге URL {url}: {error}")
-                    logger.error('Произошла ошибка, но работа будет продолжена через 30 сек.')
+                    print(f"Ошибка при парсинге URL {url}: {error}")
+                    print('Произошла ошибка, но работа будет продолжена через 30 сек.')
                 logger.info("Пауза перед следующим циклом")
                 time.sleep(int(config["BOT"]["INTERVAL"])*60)
     except Exception as e:
-        logger.error(f"Ошибка при создании браузера: {e}")
+        print(f"Ошибка при создании браузера: {e}")
 
 
 if __name__ == "__main__":
