@@ -55,7 +55,7 @@ class WBParse:
             for row in rows:
 
                 id = row.find_element(*Locator.ID)
-                print(id)
+                print(id.text)
                 status = str(row.find_element(*Locator.STATUS).text)
                 print(status)
                 if id.text and status.lower() == "не запланировано":
@@ -65,6 +65,7 @@ class WBParse:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
+                    print(self.tickets_list)
                     if self.is_tickets(id):
                         id.click()
                         self.__parse_full_page(id)
