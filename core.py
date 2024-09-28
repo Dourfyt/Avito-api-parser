@@ -80,7 +80,7 @@ class WBParse:
             date = data.get('date')
             id_ticket = data.get('id_ticket')
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
-            tickets.delete(id_ticket.text.strip())
+            tickets.delete(id_ticket.strip())
         except Exception as e:
             print(e)
 
@@ -95,7 +95,6 @@ class WBParse:
                 try:
                     current_url = str(self.driver.current_url)
                     id_ticket = current_url.split("&")[-2].split("=")[-1]
-                    print(id_ticket)
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
