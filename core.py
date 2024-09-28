@@ -96,7 +96,7 @@ class WBParse:
                         try:
                             WebDriverWait(self.driver, 10).until(
                                 EC.element_to_be_clickable(
-                                    (By.CSS_SELECTOR, 'div.Mobile-calendar-cell__button-container__W5vPcaL2M- button'))
+                                    (By.CSS_SELECTOR, 'span.caption__FBL-wiNaK0'))
                             ).click()
                             break
                         except Exception as e:
