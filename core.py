@@ -85,8 +85,9 @@ class WBParse:
             for cell in cells:
                 date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                 type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
-                coefficient = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0").text.strip()
+                coefficient = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0")
                 print(coefficient)
+                print(coefficient.text)
                 if coefficient.lower() == "бесплатно" or coefficient == "x1":
                     print("Найдено")
                 else:
