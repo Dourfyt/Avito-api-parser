@@ -94,8 +94,7 @@ class WBParse:
                         self.action.move_to_element(button_hover)
                         self.action.perform()
                         sleep(3)
-                        self.action.click()
-                        self.action.perform()
+                        cell.find_element(By.CSS_SELECTOR,'button[class="button__f0TrC4tbtM s__X1z6l6LjGR"]').click()
                         sleep(3)
                         break
                     else:
