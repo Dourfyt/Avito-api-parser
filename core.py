@@ -67,7 +67,7 @@ class WBParse:
                         id_ticket = id
                         id.click()
                         if self.__parse_full_page(id):
-                            tickets.delete()
+                            tickets.delete(id_ticket.text.strip())
                             break
                     else:
                         continue
@@ -98,13 +98,11 @@ class WBParse:
                             self.action.move_to_element(button_hover)
                             self.action.perform()
                             time.sleep(1)
-                            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
-                            ).click()
+                            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                             self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                             return True
                         except Exception as e:
-                            print(e)
-                            continue
+
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -115,14 +113,12 @@ class WBParse:
                                     self.action.move_to_element(button_hover)
                                     self.action.perform()
                                     time.sleep(1)
-                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
-                                    ).click()
+                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
                                     return True
-
                                 except Exception as e:
-                                    print(e)
-                                    continue
+                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                                    return
                         else:
                             print("Коэффициент не найден")
                 except Exception as e:
