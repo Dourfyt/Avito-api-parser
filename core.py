@@ -82,7 +82,7 @@ class WBParse:
         date = data.get('date')
         message = f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}'
         url = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={message}"
-        print(requests.get(url).json())
+        requests.get(url)
 
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
