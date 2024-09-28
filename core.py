@@ -77,9 +77,11 @@ class WBParse:
                         self.__parse_full_page(id)
                         break
                     else:
-                        tickets.delete(str(id.strip()))
+                        print(id.text.strip())
+                        tickets.delete("22001535")
                 else:
-                    tickets.delete(str(id.strip()))
+                    print(id.text.strip())
+                    tickets.delete("22001535")
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
