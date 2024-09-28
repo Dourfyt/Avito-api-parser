@@ -86,7 +86,7 @@ class WBParse:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
-                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-block__coefficient-text")
+                    coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
                     # Извлекаем число после символа "✕"
                     if "Бесплатно" in coefficient_text:
