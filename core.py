@@ -66,6 +66,7 @@ class WBParse:
                         global id_ticket
                         id_ticket = id
                         id.click()
+                        logger.success("Yes")
                         if self.__parse_full_page(id):
                             tickets.delete(id_ticket.text.strip())
                             break
