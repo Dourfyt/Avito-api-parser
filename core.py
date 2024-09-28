@@ -41,6 +41,13 @@ class WBParse:
     def __parse_page(self):
         """Парсит открытую страницу"""
         time.sleep(1)
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
+        options = self.driver.find_elements(By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")
+        for option in options:
+            if option.text == "100":
+                option.click()
+        time.sleep(1)
         try:
             if os.path.isfile('tg/tickets.txt'):
                 with open('tg/tickets.txt', 'r') as file:
