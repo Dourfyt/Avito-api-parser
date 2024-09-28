@@ -77,9 +77,7 @@ class WBParse:
 
     def __pretty_log(self, data):
         """Красивый вывод"""
-        coef = data.get('coefficient')
-        date = data.get('date')
-        logger.success(f'Статус заявки №{id.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        logger.success(f'Статус заявки № изменен на "запланирован" с коэффициентом')
 
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
@@ -101,15 +99,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            print("ugu")
-                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            print("aga")
+                            self.__pretty_log()
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            print("ugu")
-                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                            print("aga")
+                            self.__pretty_log()
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -121,15 +115,11 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    print("ugu")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date':date})
-                                    print("aga")
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    print("ugu")
                                     self.__pretty_log({'coefficient': coefficient_value, 'date': date})
-                                    print("aga")
                                     return
                         else:
                             print("Коэффициент не найден")
