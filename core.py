@@ -88,6 +88,7 @@ class WBParse:
             for cell in cells:
                 coef = cell.find_element(*Locator.RATE).text
                 coef2 = cell.find_element(*Locator.RATE_X).text
+                print(coef, coef2)
                 if coef == "Бесплатно" or coef2 == "x1":
                     print("Найдено")
                 else:
