@@ -157,7 +157,7 @@ def main():
     if token and person:
         params = {
             'token': token,
-            'chat_id': person
+            'chat_id': int(person)
         }
         tg_handler = NotificationHandler("telegram", defaults=params)
         logger.add(tg_handler, level="SUCCESS", format="{message}")
