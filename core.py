@@ -66,16 +66,19 @@ class WBParse:
             for row in rows:
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
-                if id.text and status.lower() == "не запланировано":
-                    if os.path.isfile('tg/tickets.txt'):
-                        with open('tg/tickets.txt', 'r') as file:
-                            self.tickets_list = list(map(str.rstrip, file.readlines()))
-                            if len(self.tickets_list) > 5000:
-                                self.tickets_list = self.tickets_list[-900:]
-                    if self.is_tickets(id.text.strip()):
-                        id.click()
-                        self.__parse_full_page(id)
-                        break
+                if id.text:
+                    if status.lower() == "не запланировано":
+                        if os.path.isfile('tg/tickets.txt'):
+                            with open('tg/tickets.txt', 'r') as file:
+                                self.tickets_list = list(map(str.rstrip, file.readlines()))
+                                if len(self.tickets_list) > 5000:
+                                    self.tickets_list = self.tickets_list[-900:]
+                        if self.is_tickets(id.text.strip()):
+                            id.click()
+                            self.__parse_full_page(id)
+                            break
+                        else:
+                            print((id.text.strip(), status.lower()))
                     else:
                         print((id.text.strip(), status.lower()))
                 else:
