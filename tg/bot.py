@@ -10,9 +10,22 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 import os
 from multiprocessing import Process
+import importlib.util
 import sys
-sys.path.append('..')
 from core import main
+
+# Получаем путь до корневой директории проекта
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '../..'))
+
+# Путь к файлу avito_api.py
+core_path = os.path.join(project_root, 'core.py')
+
+# Загрузка модуля через importlib
+spec = importlib.util.spec_from_file_location("avito_api", core_path)
+core = importlib.util.module_from_spec(spec)
+sys.modules["core"] = core
+spec.loader.exec_module(core)
 
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 config_path = os.path.join(parent_dir, 'config.ini')
