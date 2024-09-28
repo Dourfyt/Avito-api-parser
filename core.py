@@ -18,7 +18,7 @@ from tg.ticket import File
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
-tickets = File("tickets.txt")
+tickets = File("tickets")
 
 class WBParse:
 
@@ -80,7 +80,7 @@ class WBParse:
             date = data.get('date')
             id_ticket = data.get('id_ticket')
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
-            tickets.delete(id_ticket.strip())
+            tickets.delete(id_ticket)
         except Exception as e:
             print(e)
 
