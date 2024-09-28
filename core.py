@@ -75,7 +75,7 @@ class WBParse:
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
-    def __pretty_log(self, data):
+    def __pretty_log(self):
         """Красивый вывод"""
         try:
             logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован"')
