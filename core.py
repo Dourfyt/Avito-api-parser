@@ -89,13 +89,16 @@ class WBParse:
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-block__coefficient-text")
                     coefficient_text = coefficient_element.text
                     # Извлекаем число после символа "✕"
-                    if '✕' in coefficient_text:
-                        coefficient_number = coefficient_text.split('✕')[1].strip()  # Извлекаем все после "✕" и убираем лишние пробелы
-                        print(f"Коэффициент: {coefficient_number}")
-                    elif coefficient_text == "Бесплатно":
-                        print(f"Бесплатно")
+                    if "Бесплатно" in coefficient_text:
+                        coefficient_value = "Бесплатно"
                     else:
-                        print(f"Коэффициент не найден {coefficient_number}")
+                        # Если нет слова "Бесплатно", ищем число после "✕"
+                        if '✕' in coefficient_text:
+                            coefficient_value = coefficient_text.split('✕')[1].strip()  # Извлекаем число после "✕"
+                        else:
+                            coefficient_value = "Коэффициент не найден"
+
+                    print(f"Коэффициент: {coefficient_value}")
 
                 except Exception as e:
                     continue
