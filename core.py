@@ -14,6 +14,21 @@ import configparser
 import json
 from tg.ticket import File
 
+SUCCESS = 25
+logger.level("SUCCESS", no=SUCCESS, color="<green>")
+
+class NotificationHandler:
+    def __init__(self, service_name, defaults=None):
+        self.service_name = service_name
+        self.defaults = defaults
+
+    def send_notification(self, message):
+        # Логика отправки уведомления
+        print(f"[{self.service_name}] Отправлено уведомление: {message}")
+
+    def handle(self, message, level):
+        if level == SUCCESS:
+            self.send_notification(message)
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
@@ -78,7 +93,7 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
+        logger.add(SUCCESS, f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован" с коэффициентом {coef} | {date}')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
@@ -161,7 +176,7 @@ def main():
             'chat_id': person
         }
         tg_handler = NotificationHandler("telegram", defaults=params)
-        logger.add(tg_handler, level="SUCCESS", format="{message}")
+        logger.add(lambda msg: tg_handler.handle(msg, msg.level.name), level="SUCCESS")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
