@@ -86,10 +86,11 @@ class WBParse:
             time.sleep(2)
             cells = self.driver.find_elements(*Locator.CELLS_TABLE)
             for cell in cells:
-                coef = cell.find_element(*Locator.RATE).text
-                coef2 = cell.find_element(*Locator.RATE_X).text
-                print(coef, coef2)
-                if coef == "Бесплатно" or coef2 == "x1":
+                date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
+                type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
+                coefficient = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-block__coefficient-text span.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf").text
+                print(coefficient, date, type_)
+                if coefficient == "Бесплатно" or coefficient == "x1":
                     print("Найдено")
                 else:
                     print("Не найдено")
