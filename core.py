@@ -104,6 +104,7 @@ class WBParse:
                         except Exception as e:
                             WebDriverWait(self.driver, 10).until(
                                 EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                            self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -119,6 +120,7 @@ class WBParse:
                                     return True
                                 except Exception as e:
                                     WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))).click()
+                                    self.__pretty_log({'coefficient': coefficient_value, 'date': date})
                                     return
                         else:
                             print("Коэффициент не найден")
