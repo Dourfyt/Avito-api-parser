@@ -88,13 +88,13 @@ class WBParse:
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
+            current_url = str(self.driver.current_url)
+            id_ticket = current_url.split("&")[-2].split("=")[-1]
             time.sleep(1)
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             for cell in cells:
                 try:
-                    current_url = str(self.driver.current_url)
-                    id_ticket = current_url.split("&")[-2].split("=")[-1]
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
