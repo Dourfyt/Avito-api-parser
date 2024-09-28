@@ -93,9 +93,15 @@ class WBParse:
                         button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
                         try:
                             self.action.move_to_element(button_hover)
+                            self.action.perform()
+                            time.sleep(1)
                             self.action.click()
                             self.action.perform()
-                            break
+                            self.action.click()
+                            self.action.perform()
+                            self.action.click()
+                            self.action.perform()
+                            return
                         except Exception as e:
                             print(e)
                             continue
@@ -106,7 +112,7 @@ class WBParse:
                                 cell.find_element(By.CSS_SELECTOR,
                                                   'button[class="button__f0TrC4tbtM s__X1z6l6LjGR"]').click()
                                 time.sleep(3)
-                                break
+                                return
                         else:
                             print("Коэффициент не найден")
                 except Exception as e:
