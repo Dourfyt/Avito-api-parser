@@ -63,26 +63,28 @@ class WBParse:
                     option.click()
             time.sleep(1)
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
+            ids = []
             for row in rows:
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
-                if id.text:
-                    if status.lower() == "не запланировано":
-                        if os.path.isfile('tg/tickets.txt'):
-                            with open('tg/tickets.txt', 'r') as file:
-                                self.tickets_list = list(map(str.rstrip, file.readlines()))
-                                if len(self.tickets_list) > 5000:
-                                    self.tickets_list = self.tickets_list[-900:]
-                        if self.is_tickets(id.text.strip()):
-                            id.click()
-                            self.__parse_full_page(id)
-                            break
-                        else:
-                            print((id.text.strip(), status.lower()))
+                if id.text and status.lower() == "не запланировано":
+                    if os.path.isfile('tg/tickets.txt'):
+                        with open('tg/tickets.txt', 'r') as file:
+                            self.tickets_list = list(map(str.rstrip, file.readlines()))
+                            if len(self.tickets_list) > 5000:
+                                self.tickets_list = self.tickets_list[-900:]
+                    if self.is_tickets(id.text.strip()):
+                        id.click()
+                        self.__parse_full_page(id)
+                        break
                     else:
-                        print((id.text.strip(), status.lower()))
+                        ids.append(id.text.strip())
                 else:
                     continue
+
+            for ticket in self.tickets_list:
+                if ticket not in ids:
+                    tickets.delete(ticket)
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
