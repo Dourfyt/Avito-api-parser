@@ -48,12 +48,12 @@ class WBParse:
             navigator = self.driver.find_element(*Locator.NAVIGATOR)
             self.action.move_to_element(navigator)
             self.action.perform()
-            self.driver.find_element(*Locator.LI_NAVIGATOR).click()
-            time.sleep(7)
-            rows = self.driver.find_elements(*Locator.ROWS)
-            time.sleep(2)
+            WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable(*Locator.LI_NAVIGATOR)
+                ).click()
+            rows = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_all_elements_located(*Locator.ROWS))
             for row in rows:
-
                 id = row.find_element(*Locator.ID)
                 status = str(row.find_element(*Locator.STATUS).text)
                 if id.text and status.lower() == "не запланировано":
@@ -85,7 +85,6 @@ class WBParse:
             for cell in cells:
                 try:
                     date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                    type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-table-cell__EqV0w0Bye8")
                     coefficient_text = coefficient_element.text
                     if "Бесплатно" in coefficient_text:
@@ -95,10 +94,9 @@ class WBParse:
                             self.action.move_to_element(button_hover)
                             self.action.perform()
                             time.sleep(1)
-                            WebDriverWait(self.driver, 10).until(
-                                EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
+                            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
                             ).click()
-                            return
+                            return {'coefficient': coefficient_value, 'date':date,}
                         except Exception as e:
                             print(e)
                             continue
@@ -106,10 +104,17 @@ class WBParse:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
                             if coefficient_value == "1":
-                                cell.find_element(By.CSS_SELECTOR,
-                                                  'button[class="button__f0TrC4tbtM s__X1z6l6LjGR"]').click()
-                                time.sleep(3)
-                                return
+                                button_hover = cell.find_element(By.CSS_SELECTOR, 'div.Calendar-cell__button-container__ANliSQlw9D')
+                                try:
+                                    self.action.move_to_element(button_hover)
+                                    self.action.perform()
+                                    time.sleep(1)
+                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//button[span[text()="Выбрать"]]'))
+                                    ).click()
+                                    return
+                                except Exception as e:
+                                    print(e)
+                                    continue
                         else:
                             print("Коэффициент не найден")
                 except Exception as e:
@@ -144,27 +149,21 @@ def main():
 
     try:
         with webdriver.Chrome(options=options) as browser_driver:
-            # Обновляем страницу
             time.sleep(0.5)
             while True:
                 try:
                     driver = WBParse(
                         url=url,
                         driver=browser_driver,
-                        action = webdriver.ActionChains(browser_driver)  # Передаем уже созданный браузер
+                        action = webdriver.ActionChains(browser_driver)
                     )
-
                     driver.parse()
                     logger.info(f"Завершен парсинг для URL: {url}")
-                    time.sleep(3)
                 except Exception as error:
                     logger.error(f"Ошибка при парсинге URL {url}: {error}")
-                    logger.error('Произошла ошибка, но работа будет продолжена через 30 сек. '
-                                'Если ошибка повторится несколько раз - перезапустите скрипт.'
-                                'Если и это не поможет - обратитесь к разработчику по ссылке ниже')
-
+                    logger.error('Произошла ошибка, но работа будет продолжена через 30 сек.')
                 logger.info("Пауза перед следующим циклом")
-                time.sleep(3)
+                time.sleep(int(config["BOT"]["INTERVAL"])*60)
     except Exception as e:
         logger.error(f"Ошибка при создании браузера: {e}")
 
