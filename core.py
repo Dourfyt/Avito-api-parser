@@ -94,7 +94,7 @@ class WBParse:
                         self.action.move_to_element(button_hover)
                         self.action.perform()
                         try:
-                            sleep(2)
+                            time.sleep(3)
                             button_hover.click()
                             break
                         except Exception as e:
@@ -106,7 +106,7 @@ class WBParse:
                             if coefficient_value == "1":
                                 cell.find_element(By.CSS_SELECTOR,
                                                   'button[class="button__f0TrC4tbtM s__X1z6l6LjGR"]').click()
-                                sleep(3)
+                                time.sleep(3)
                                 break
                         else:
                             print("Коэффициент не найден")
