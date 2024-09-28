@@ -78,7 +78,7 @@ class WBParse:
     def __pretty_log(self):
         """Красивый вывод"""
         try:
-            logger.success(f'Статус заявки №{id_ticket.text.strip()} изменен на "запланирован"')
+            logger.success(f'Статус заявки № изменен на "запланирован" с коэффициентом')
         except Exception as e:
             print(e)
 
@@ -118,11 +118,11 @@ class WBParse:
                                     self.action.perform()
                                     time.sleep(1)
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({'coefficient': coefficient_value, 'date':date})
+                                    self.__pretty_log()
                                     return True
                                 except Exception as e:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                    self.__pretty_log({'coefficient': coefficient_value, 'date': date})
+                                    self.__pretty_log()
                                     return
                         else:
                             print("Коэффициент не найден")
