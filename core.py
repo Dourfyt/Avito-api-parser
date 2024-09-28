@@ -89,7 +89,7 @@ class WBParse:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
         try:
             id_ticket = WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'Планирование даты поставки')]"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.Modal__title__YyPPzEhI7r span"))
             )
             id_ticket=id_ticket.text
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
