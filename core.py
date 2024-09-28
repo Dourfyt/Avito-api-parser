@@ -103,11 +103,11 @@ class WBParse:
                             self.action.perform()
                             time.sleep(1)
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value})
+                            self.__pretty_log({'coefficient': coefficient_text})
                             return True
                         except Exception as e:
                             cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({'coefficient': coefficient_value})
+                            self.__pretty_log({'coefficient': coefficient_text})
                     else:
                         if '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
