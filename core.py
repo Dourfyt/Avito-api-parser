@@ -84,6 +84,7 @@ class WBParse:
         try:
             self.driver.find_element(*Locator.PLAN).click()
             cells = self.driver.find_elements(*Locator.CELLS_TABLE)
+            print(cells)
             for cell in cells:
                 if cell.find_element(*Locator.RATE).text == "Бесплатно" or cell.find_element(*Locator.RATE_X).text == "x1":
                     print("Найдено")
