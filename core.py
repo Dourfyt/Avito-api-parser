@@ -88,19 +88,15 @@ class WBParse:
                     type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
                     coefficient_element = cell.find_element(By.CSS_SELECTOR,"div.Coefficient-block__coefficient-text")
                     coefficient_text = coefficient_element.text
-
                     # Извлекаем число после символа "✕"
                     if '✕' in coefficient_text:
                         coefficient_number = coefficient_text.split('✕')[1].strip()  # Извлекаем все после "✕" и убираем лишние пробелы
                         print(f"Коэффициент: {coefficient_number}")
+                    elif coefficient_text == "Бесплатно":
+                        print(f"Бесплатно")
                     else:
                         print(f"Коэффициент не найден {coefficient_number}")
 
-                    if coefficient_free.text.strip().lower() == "бесплатно" or coefficient_number.text.strip() == "1":
-                        print("Найдено")
-                    else:
-                        print("Не найдено")
-                        continue
                 except Exception as e:
                     continue
         except:
