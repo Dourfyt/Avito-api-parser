@@ -65,6 +65,7 @@ class WBParse:
                             if len(self.tickets_list) > 5000:
                                 self.tickets_list = self.tickets_list[-900:]
                     print(self.tickets_list)
+                    print(id.text.strip())
                     if self.is_tickets(id.text.strip()):
                         id.click()
                         self.__parse_full_page(id)
@@ -89,7 +90,6 @@ class WBParse:
                 date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
                 type_ = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__amount-container__hWMXNHqoIx span").text
                 coefficient = cell.find_element(By.CSS_SELECTOR, "span.Text__jKJsQramuu.Text--body-s__H-2cuInG9C.Text--black__hIzfx5PELf.Text--textDecoration-none__rkxLphaqR0").text
-                print(coefficient, date, type_)
                 if coefficient == "Бесплатно" or coefficient == "x1":
                     print("Найдено")
                 else:
