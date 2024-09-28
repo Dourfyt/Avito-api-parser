@@ -73,7 +73,7 @@ class WBParse:
         """Красивый вывод"""
         coef = data.get('coefficient')
         date = data.get('date')
-        logger.success(f'Статус заявки {id} изменен')
+        logger.success(f'Статус заявки {date} изменен на запланирован с коэффициентом {coef}')
 
     def __parse_full_page(self, url: str, data: dict = {}) -> dict:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
@@ -147,7 +147,15 @@ def main():
     options.add_argument('--profile-directory=Profile 1')
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-
+    token = config["BOT"]["TOKEN"]
+    person = config["BOT"]["PERSON"]
+    if token and person:
+        params = {
+            'token': token,
+            'chat_id': person
+        }
+        tg_handler = NotificationHandler("telegram", defaults=params)
+        logger.add(tg_handler, level="SUCCESS", format="{message}")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
