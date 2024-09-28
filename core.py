@@ -61,7 +61,7 @@ class WBParse:
             for option in options:
                 if option.text == "100":
                     option.click()
-            time.sleep(10)
+            time.sleep(1)
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
             for row in rows:
                 id = row.find_element(*Locator.ID)
@@ -77,9 +77,9 @@ class WBParse:
                         self.__parse_full_page(id)
                         break
                     else:
-                        continue
+                        tickets.delete(str(id.strip()))
                 else:
-                    tickets.delete(id.text.strip())
+                    tickets.delete(str(id.strip()))
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
