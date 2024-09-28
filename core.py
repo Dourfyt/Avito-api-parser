@@ -76,11 +76,13 @@ class WBParse:
 
                 # Проверяем условие для удаления: id == "-" и статус не "не запланировано"
                 if id == "-" and status != "не запланировано":
+                    print(id,' К удалению')
                     ids_to_remove.append(id)
                     continue
 
                 # Остальная логика парсинга
                 if id and status == "не запланировано":
+                    print(id, "проходит")
                     if os.path.isfile('tg/tickets.txt'):
                         with open('tg/tickets.txt', 'r') as file:
                             self.tickets_list = list(map(str.rstrip, file.readlines()))
