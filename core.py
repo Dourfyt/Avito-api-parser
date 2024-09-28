@@ -80,7 +80,7 @@ class WBParse:
                         continue
                 else:
                     print(id.text.strip())
-                    tickets.delete("22001533")
+                    tickets.delete("22001535")
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
