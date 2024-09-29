@@ -126,11 +126,12 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
-
+            button_planning = self.driver.find_element(By.XPATH, '//button[span[text()="Запланировать"]]')
+            print(button_planning.text)
             for cell in cells:
                 try:
                     date_text = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-
+                    
                     # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
                     try:
                         # Убираем день недели из строки, чтобы корректно преобразовать дату
@@ -154,7 +155,6 @@ class WBParse:
                     if date_object > buffer_date:
                         coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
                         coefficient_text = coefficient_element.text
-                        print(date_text_clean, coefficient_text)
                         if "Бесплатно" in coefficient_text:
                             coefficient_value = "Бесплатно"
                             button_hover = cell.find_element(By.CSS_SELECTOR,
