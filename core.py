@@ -127,7 +127,6 @@ class WBParse:
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
             button_planning = self.driver.find_element(By.XPATH, '//button[span[text()="Запланировать"]]')
-            print(button_planning.text)
             for cell in cells:
                 try:
                     date_text = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
@@ -167,6 +166,8 @@ class WBParse:
                             # Клик только при успешном нахождении элемента
                             try:
                                 cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                time.sleep(2)
+                                button_planning.click()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
@@ -181,10 +182,13 @@ class WBParse:
                                 # Перемещение курсора на кнопку
                                 self.action.move_to_element(button_hover).perform()
                                 time.sleep(1)
+                                
 
                                 # Клик только при успешном нахождении элемента
                                 try:
                                     cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    time.sleep(2)
+                                    button_planning.click()
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
