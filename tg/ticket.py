@@ -13,16 +13,18 @@ class File:
 
     def rewrite(self):
         with open(self.filename, "w") as f:
-            return
+            return "Файл успешно сброшен!"
 
     def show(self):
         with open(self.filename, "r") as f:
             lines = f.readlines()
             result = ''
-            for line in lines:
-                result += line
-            return result
-
+            if len(lines) > 0:
+                for line in lines:
+                    result += line
+                return result
+            else:
+                return "Файл пустой"
 
     def add(self, message):
         """Добавить строку"""
