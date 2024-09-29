@@ -75,6 +75,7 @@ class WBParse:
             for row in rows:
                 id_element = row.find_element(*Locator.ID)
                 id_text = id_element.text.strip()  # Убираем пробелы
+                print(id_text)
                 status = str(row.find_element(*Locator.STATUS).text).lower()
 
                 if id_text and status == "не запланировано":
