@@ -11,8 +11,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from locator import Locator
 import configparser
 import json
+import locale
+from datetime import datetime, timedelta
 from tg.ticket import File
 
+locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 is_empty = False
 
@@ -126,32 +129,36 @@ class WBParse:
 
             for cell in cells:
                 try:
-                    date = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
-                    coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
-                    coefficient_text = coefficient_element.text
+                    date_text = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
 
-                    if "Бесплатно" in coefficient_text:
-                        coefficient_value = "Бесплатно"
-                        button_hover = cell.find_element(By.CSS_SELECTOR,
-                                                         'div.Calendar-cell__button-container__ANliSQlw9D')
+                    # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
+                    try:
+                        # Убираем день недели из строки, чтобы корректно преобразовать дату
+                        date_text_clean = date_text.split(',')[0].strip()
 
-                        # Перемещение курсора на кнопку
-                        self.action.move_to_element(button_hover).perform()
-                        time.sleep(1)
+                        # Преобразуем дату с русскими месяцами
+                        date_object = datetime.strptime(date_text_clean, "%d %B")
+                        
+                        # Добавляем текущий год, так как год в исходной строке отсутствует
+                        date_object = date_object.replace(year=datetime.now().year)
 
-                        # Клик только при успешном нахождении элемента
-                        try:
-                            cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                            self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date})
-                            return True
-                        except Exception as e:
-                            print(f"Error clicking 'Выбрать': {e}")
+                    except ValueError as ve:
+                        print(f"Ошибка при преобразовании даты: {ve}")
+                        continue
 
-                    elif '✕' in coefficient_text:
-                        coefficient_value = coefficient_text.split('✕')[1].strip()
-                        if coefficient_value == "1":
+                    # Получаем сегодняшнюю дату и добавляем 3 дня
+                    today = datetime.now()
+                    three_days_later = today + timedelta(days=3)
+
+                    # Сравниваем даты
+                    if date_object > three_days_later:
+                        coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
+                        coefficient_text = coefficient_element.text
+
+                        if "Бесплатно" в coefficient_text:
+                            coefficient_value = "Бесплатно"
                             button_hover = cell.find_element(By.CSS_SELECTOR,
-                                                             'div.Calendar-cell__button-container__ANliSQlw9D')
+                                                            'div.Calendar-cell__button-container__ANliSQlw9D')
 
                             # Перемещение курсора на кнопку
                             self.action.move_to_element(button_hover).perform()
@@ -160,14 +167,35 @@ class WBParse:
                             # Клик только при успешном нахождении элемента
                             try:
                                 cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
-                                self.__pretty_log(
-                                    {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date})
+                                self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
                                 print(f"Error clicking 'Выбрать': {e}")
 
+                        elif '✕' в coefficient_text:
+                            coefficient_value = coefficient_text.split('✕')[1].strip()
+                            if coefficient_value == "1":
+                                button_hover = cell.find_element(By.CSS_SELECTOR,
+                                                                'div.Calendar-cell__button-container__ANliSQlw9D')
+
+                                # Перемещение курсора на кнопку
+                                self.action.move_to_element(button_hover).perform()
+                                time.sleep(1)
+
+                                # Клик только при успешном нахождении элемента
+                                try:
+                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    self.__pretty_log(
+                                        {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
+                                    return True
+                                except Exception as e:
+                                    print(f"Error clicking 'Выбрать': {e}")
+
+                        else:
+                            print("Коэффициент не найден")
+
                     else:
-                        print("Коэффициент не найден")
+                        print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + 3 дня")
 
                 except Exception as e:
                     print(f"Ошибка: {e}")
