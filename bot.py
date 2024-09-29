@@ -21,7 +21,7 @@ file = tg.ticket.File('tg/tickets')
 users = config["BOT"]["PERSON"].split(",")
 
 class IsAllowedUser(BaseFilter):
-    async def __call__(self, message: Message) -> bool:
+    async def __call__(self, message: types.Message) -> bool:
         return message.from_user.id in users
 
 class Tickets(StatesGroup):
