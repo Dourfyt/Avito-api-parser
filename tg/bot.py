@@ -38,18 +38,18 @@ async def add_ticket(call : types.CallbackQuery, state: FSMContext):
     await call.message.answer("Введите номер заявки")
     await state.set_state(States.add_ticket)
 
-@dp.callback_query(States.add_ticket, IsAllowedUser())
+@dp.message(States.add_ticket, F.text)
 async def add(message : types.Message, state : FSMContext):
     file.add(message.text)
     await message.answer(f"Поставка №{message.text} успешно добавлена")
     await state.clear()
 
-@dp.callback_query(F.data=="del", IsAllowedUser())
+@dp.callback_query(F.data=="delete", IsAllowedUser())
 async def add_ticket(call : types.CallbackQuery, state: FSMContext):
     await call.message.answer("Введите номер заявки для удаления")
     await state.set_state(States.del_ticket)
 
-@dp.callback_query(States.del_ticket, IsAllowedUser(), F.text)
+@dp.message(States.del_ticket, IsAllowedUser())
 async def delete(message : types.Message, state : FSMContext):
     file.delete(message.text)
     await message.answer(f"Поставка №{message.text} успешно удалена")
