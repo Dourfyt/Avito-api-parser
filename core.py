@@ -148,7 +148,7 @@ class WBParse:
 
                     # Получаем сегодняшнюю дату и добавляем 3 дня
                     today = datetime.now()
-                    three_days_later = today + timedelta(days=3)
+                    three_days_later = today + timedelta(days=int(config["BOT"]["BUFFER"].strip()))
 
                     # Сравниваем даты
                     if date_object > three_days_later:
