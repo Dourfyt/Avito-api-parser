@@ -30,7 +30,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
 @dp.message(Command("help"))
 async def cmd_start(message: types.Message, state: FSMContext):
-    await message.answer("Добавить поставку - /add номер поставки\nУдалить поставку - /del номер поставки\nПросмотреть файл - /show")
+    await message.answer("Добавить поставку - /add номер поставки\nУдалить поставку - /del номер поставки\nПросмотреть файл - /show\nСбросить файл - /reset")
 
 @dp.message(Command("add"), F.text)
 async def add_ticket(message: types.Message, state: FSMContext):
@@ -46,6 +46,9 @@ async def del_ticket(message: types.Message, state: FSMContext):
 async def show(message: types.Message, state: FSMContext):
     await message.answer(file.show())
 
+@dp.message(Command('reset'))
+async def show(message: types.Message, state: FSMContext):
+    await message.answer(file.rewrite())
 
 async def main():
     await dp.start_polling(bot)

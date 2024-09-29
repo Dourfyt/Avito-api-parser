@@ -11,6 +11,10 @@ class File:
             with open(f"{Path(__file__).resolve().parent.parent}{self.filename}", "w") as f:
                 pass
 
+    def rewrite(self):
+        with open(self.filename, "w") as f:
+            return
+
     def show(self):
         with open(self.filename, "r") as f:
             lines = f.readlines()
