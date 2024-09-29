@@ -9,7 +9,7 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 import threading
-from core import main
+from core import main as run_sel
 
 
 
@@ -50,12 +50,13 @@ async def show(message: types.Message, state: FSMContext):
 @dp.message(Command('run'))
 async def run(message: types.Message, state: FSMContext):
     global proc
-    proc = threading.Thread(target=main, daemon=True)
+    proc = threading.Thread(target=run_sel, daemon=True)
     proc.start()
     await message.answer("Запущен")
 
 @dp.message(Command('stop'))
 async def stop(message: types.Message, state: FSMContext):
+    proc.join()
     await message.answer("Отключен")
 
 @dp.message(Command('refresh'))
