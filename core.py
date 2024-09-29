@@ -41,6 +41,8 @@ class WBParse:
     def __parse_page(self):
         """Парсит открытую страницу"""
         time.sleep(1)
+        global is_empty
+        is_empty = False
         try:
             # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
@@ -50,6 +52,7 @@ class WBParse:
             else:
                 self.tickets_list = []
             if len(self.tickets_list) != 0:
+                is_empty = False
                 navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
                 self.action.move_to_element(navigator)
                 self.action.perform()
@@ -92,7 +95,8 @@ class WBParse:
                 with open('tg/tickets.txt', 'w') as file:
                     for ticket_id in self.tickets_list:
                         file.write(f"{ticket_id}\n")
-            else:
+            elif not is_empty:
+                is_empty = True
                 logger.success("Все заявки отработаны - файл пустой")
 
         except Exception as e:
