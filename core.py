@@ -205,6 +205,7 @@ def main():
             }
             tg_handler = NotificationHandler("telegram", defaults=params)
             logger.add(tg_handler, level="SUCCESS", format="{message}")
+    logger.success('Браузер запущен')
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)
