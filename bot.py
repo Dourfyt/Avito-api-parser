@@ -8,9 +8,9 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-import os
-from multiprocessing import Process
+import threading
 from core import main
+
 
 
 logging.basicConfig(level=logging.INFO)
@@ -23,43 +23,43 @@ file = tg.ticket.File('tg/tickets')
 class Tickets(StatesGroup):
     add_ticket = State()
 
-@dp.message(StateFilter(None), Command("start"))
+@dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
-    await message.answer("Здравствуйте, я бот для работы с заявка WB! Введите номер заявки.")
-    await state.set_state(Tickets.add_ticket)
-
-@dp.message(Tickets.add_ticket, F.text)
-async def add_ticket(message: types.Message, state: FSMContext):
-    file.add(message)
+    await message.answer("Здравствуйте, я бот для работы с заявками WB! Введите /help, для ознакомления с командами")
     await state.clear()
-    await message.answer(file.get_first())
 
-@dp.message(Tickets.add_ticket)
-async def wrong_ticket(message: types.Message, state: FSMContext):
-    await message.answer("Неправильный формат заявки, попробуйте еще раз")
+@dp.message(Command("help"))
+async def cmd_start(message: types.Message, state: FSMContext):
+    await message.answer("Добавить поставку - /add номер поставки\nУдалить поставку - /del номер поставки\nПросмотреть файл - /show")
 
-@dp.message(Command('list'))
-async def list(message: types.Message, state: FSMContext):
+@dp.message(Command("add"), F.text)
+async def add_ticket(message: types.Message, state: FSMContext):
+    file.add(message.text.split(' ')[-1])
+    await message.answer("Успешно!")
+
+@dp.message(Command("del"))
+async def del_ticket(message: types.Message, state: FSMContext):
+    file.delete(message.text.split(' ')[-1])
+    await message.answer("Успешно")
+
+
+@dp.message(Command('show'))
+async def show(message: types.Message, state: FSMContext):
     await message.answer(file.show())
 
 @dp.message(Command('run'))
 async def run(message: types.Message, state: FSMContext):
-    global p1
-    p1 = Process(target=main, daemon=True)
-    await p1.start()
-    await p1.join()
+    global proc
+    proc = threading.Thread(target=main, daemon=True)
+    proc.start()
     await message.answer("Запущен")
 
 @dp.message(Command('stop'))
 async def stop(message: types.Message, state: FSMContext):
-    p1.close()
     await message.answer("Отключен")
 
 @dp.message(Command('refresh'))
 async def stop(message: types.Message, state: FSMContext):
-    p1.close()
-    p1.start()
-    p1.join()
     await message.answer("Перезагружен")
 
 

@@ -75,30 +75,22 @@ class WBParse:
                 id_text = id_element.text.strip()  # Убираем пробелы
                 status = str(row.find_element(*Locator.STATUS).text).lower()
 
-                # Если статус "не запланировано", сохраняем ID для дальнейшей обработки
                 if id_text and status == "не запланировано":
                     page_ids.append(id_text)
                 else:
                     continue
-            print(page_ids)
             # Проверяем каждый ID из файла и кликаем, если найден на странице
             for ticket_id in reversed(self.tickets_list):
                 if ticket_id in page_ids:
-                    # Кликаем по ID
                     try:
                         id_element = next(row.find_element(*Locator.ID) for row in rows if
                                           row.find_element(*Locator.ID).text.strip() == ticket_id)
                         id_element.click()
-
-                        # Парсим полную страницу для выбранного ID
                         self.__parse_full_page(ticket_id)
                     except Exception as e:
                         print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
-            print(self.tickets_list, "до удаления")
-            # Удаляем из tickets_list только те ID, которых нет на странице
             self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
-            print(self.tickets_list, "после удаления")
-            # Перезаписываем файл с актуальными ID
+
             with open('tg/tickets.txt', 'w') as file:
                 for ticket_id in self.tickets_list:
                     file.write(f"{ticket_id}\n")
@@ -204,14 +196,15 @@ def main():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
-    person = config["BOT"]["PERSON"]
-    if token and person:
-        params = {
-            'token': token,
-            'chat_id': person
-        }
-        tg_handler = NotificationHandler("telegram", defaults=params)
-        logger.add(tg_handler, level="SUCCESS", format="{message}")
+    persons = config["BOT"]["PERSON"].split(",")
+    for person in persons:
+        if token and person:
+            params = {
+                'token': token,
+                'chat_id': person
+            }
+            tg_handler = NotificationHandler("telegram", defaults=params)
+            logger.add(tg_handler, level="SUCCESS", format="{message}")
     try:
         with webdriver.Chrome(options=options) as browser_driver:
             time.sleep(0.5)

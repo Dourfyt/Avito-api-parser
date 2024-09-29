@@ -16,14 +16,14 @@ class File:
             lines = f.readlines()
             result = ''
             for line in lines:
-                result = result.join(line+"\n")
+                result += line
             return result
 
 
     def add(self, message):
         """Добавить строку"""
         with open(self.filename, "a") as f:
-            f.write(message.text+'\n')
+            f.write(message+'\n')
 
     def get(self, message):
         """Получить строку"""
