@@ -66,34 +66,38 @@ class WBParse:
                     option.click()
             time.sleep(1)
 
-            # Парсим строки на странице
+            # Парсим строки на странице и собираем ID в массив
             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
-
-            # Собираем ID, которые найдены на странице
-            found_ids = []
+            page_ids = []
 
             for row in rows:
                 id_element = row.find_element(*Locator.ID)
                 id_text = id_element.text.strip()  # Убираем пробелы
-                print(id_text)
                 status = str(row.find_element(*Locator.STATUS).text).lower()
 
+                # Если статус "не запланировано", сохраняем ID для дальнейшей обработки
                 if id_text and status == "не запланировано":
-                    found_ids.append(id_text)
-
-                    # Проверяем, что ID уже есть в tickets_list
-                    if id_text in self.tickets_list:
-                        # Если ID есть в списке, кликаем по нему
-                        id_element.click()
-
-                        # Парсим полную страницу
-                        self.__parse_full_page(id_text)
+                    page_ids.append(id_text)
                 else:
                     continue
+            print(page_ids)
+            # Проверяем каждый ID из файла и кликаем, если найден на странице
+            for ticket_id in self.tickets_list:
+                if ticket_id in page_ids:
+                    # Кликаем по ID
+                    try:
+                        id_element = next(row.find_element(*Locator.ID) for row in rows if
+                                          row.find_element(*Locator.ID).text.strip() == ticket_id)
+                        id_element.click()
 
-            # Удаляем из tickets_list те ID, которых нет на странице
-            self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in found_ids]
-
+                        # Парсим полную страницу для выбранного ID
+                        self.__parse_full_page(ticket_id)
+                    except Exception as e:
+                        print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
+            print(self.tickets_list, "до удаления")
+            # Удаляем из tickets_list только те ID, которых нет на странице
+            self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
+            print(self.tickets_list, "после удаления")
             # Перезаписываем файл с актуальными ID
             with open('tg/tickets.txt', 'w') as file:
                 for ticket_id in self.tickets_list:
