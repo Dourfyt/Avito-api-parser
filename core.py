@@ -13,7 +13,7 @@ import configparser
 import json
 from tg.ticket import File
 
-global is_empty
+
 is_empty = False
 
 config = configparser.ConfigParser(interpolation=None)
@@ -43,6 +43,7 @@ class WBParse:
     def __parse_page(self):
         """Парсит открытую страницу"""
         time.sleep(1)
+        global is_empty
         try:
             # Читаем существующие ID из файла tickets.txt
             if os.path.isfile('tg/tickets.txt'):
