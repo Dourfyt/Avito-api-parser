@@ -146,12 +146,12 @@ class WBParse:
                         print(f"Ошибка при преобразовании даты: {ve}")
                         continue
 
-                    # Получаем сегодняшнюю дату и добавляем 3 дня
+                    buffer_days = int(config["BOT"]["BUFFER"])
                     today = datetime.now()
-                    three_days_later = today + timedelta(days=int(config["BOT"]["BUFFER"].strip()))
+                    buffer_date = today + timedelta(days=buffer_days)
 
                     # Сравниваем даты
-                    if date_object > three_days_later:
+                    if date_object > buffer_date:
                         coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
                         coefficient_text = coefficient_element.text
                         print(date_text_clean, coefficient_text)
@@ -195,7 +195,7 @@ class WBParse:
                             print("Коэффициент не найден")
 
                     else:
-                        print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + 3 дня")
+                        print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + {buffer_days} дня")
 
                 except Exception as e:
                     print(f"Ошибка: {e}")
