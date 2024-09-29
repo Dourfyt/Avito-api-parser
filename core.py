@@ -154,8 +154,8 @@ class WBParse:
                     if date_object > three_days_later:
                         coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
                         coefficient_text = coefficient_element.text
-
-                        if "Бесплатно" в coefficient_text:
+                        print(date_text_clean, coefficient_text)
+                        if "Бесплатно" in coefficient_text:
                             coefficient_value = "Бесплатно"
                             button_hover = cell.find_element(By.CSS_SELECTOR,
                                                             'div.Calendar-cell__button-container__ANliSQlw9D')
@@ -172,7 +172,7 @@ class WBParse:
                             except Exception as e:
                                 print(f"Error clicking 'Выбрать': {e}")
 
-                        elif '✕' в coefficient_text:
+                        elif '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
                             if coefficient_value == "1":
                                 button_hover = cell.find_element(By.CSS_SELECTOR,
