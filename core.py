@@ -208,20 +208,20 @@ def main():
         while True:
             with webdriver.Chrome(options=options) as browser_driver:
                 time.sleep(0.5)
-            try:
-                driver = WBParse(
-                    url=url,
-                    driver=browser_driver,
-                    action = webdriver.ActionChains(browser_driver)
-                )
-                driver.parse()
-                driver.driver.quit()
-                logger.info(f"Завершен парсинг для URL: {url}")
-            except Exception as error:
-                print(f"Ошибка при парсинге URL {url}: {error}")
-                print('Произошла ошибка, но работа будет продолжена через 30 сек.')
-            logger.info("Пауза перед следующим циклом")
-            time.sleep(int(config["BOT"]["INTERVAL"])*60)
+                try:
+                    driver = WBParse(
+                        url=url,
+                        driver=browser_driver,
+                        action = webdriver.ActionChains(browser_driver)
+                    )
+                    driver.parse()
+                    driver.driver.quit()
+                    logger.info(f"Завершен парсинг для URL: {url}")
+                except Exception as error:
+                    print(f"Ошибка при парсинге URL {url}: {error}")
+                    print('Произошла ошибка, но работа будет продолжена через 30 сек.')
+                logger.info("Пауза перед следующим циклом")
+                time.sleep(int(config["BOT"]["INTERVAL"])*60)
     except Exception as e:
         print(f"Ошибка при создании браузера: {e}")
 
