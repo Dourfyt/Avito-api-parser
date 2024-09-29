@@ -49,49 +49,51 @@ class WBParse:
                     self.tickets_list = list(map(str.rstrip, file.readlines()))
             else:
                 self.tickets_list = []
+            if len(self.tickets_list) != 0:
+                navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
+                self.action.move_to_element(navigator)
+                self.action.perform()
+                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
+                options = self.driver.find_elements(By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")
+                for option in options:
+                    if option.text == "100":
+                        option.click()
+                time.sleep(1)
 
-            navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
-            self.action.move_to_element(navigator)
-            self.action.perform()
-            WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
-            WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
-            WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
-            options = self.driver.find_elements(By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")
-            for option in options:
-                if option.text == "100":
-                    option.click()
-            time.sleep(1)
+                # Парсим строки на странице и собираем ID в массив
+                rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
+                page_ids = []
 
-            # Парсим строки на странице и собираем ID в массив
-            rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
-            page_ids = []
+                for row in rows:
+                    id_element = row.find_element(*Locator.ID)
+                    id_text = id_element.text.strip()  # Убираем пробелы
+                    status = str(row.find_element(*Locator.STATUS).text).lower()
 
-            for row in rows:
-                id_element = row.find_element(*Locator.ID)
-                id_text = id_element.text.strip()  # Убираем пробелы
-                status = str(row.find_element(*Locator.STATUS).text).lower()
+                    if id_text and status == "не запланировано":
+                        page_ids.append(id_text)
+                    else:
+                        continue
+                # Проверяем каждый ID из файла и кликаем, если найден на странице
+                for ticket_id in reversed(self.tickets_list):
+                    if ticket_id in page_ids:
+                        try:
+                            id_element = next(row.find_element(*Locator.ID) for row in rows if
+                                              row.find_element(*Locator.ID).text.strip() == ticket_id)
+                            id_element.click()
+                            self.__parse_full_page(ticket_id)
+                        except Exception as e:
+                            print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
+                self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
 
-                if id_text and status == "не запланировано":
-                    page_ids.append(id_text)
-                else:
-                    continue
-            # Проверяем каждый ID из файла и кликаем, если найден на странице
-            for ticket_id in reversed(self.tickets_list):
-                if ticket_id in page_ids:
-                    try:
-                        id_element = next(row.find_element(*Locator.ID) for row in rows if
-                                          row.find_element(*Locator.ID).text.strip() == ticket_id)
-                        id_element.click()
-                        self.__parse_full_page(ticket_id)
-                    except Exception as e:
-                        print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
-            self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
-
-            with open('tg/tickets.txt', 'w') as file:
-                for ticket_id in self.tickets_list:
-                    file.write(f"{ticket_id}\n")
+                with open('tg/tickets.txt', 'w') as file:
+                    for ticket_id in self.tickets_list:
+                        file.write(f"{ticket_id}\n")
+            else:
+                logger.success("Все заявки отработаны - файл пустой")
 
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
@@ -183,6 +185,7 @@ class WBParse:
             logger.info(f"Страница загружена")
             self.__parse_page()
             logger.info(f"Парсинг завершен")
+
         except Exception as error:
             print(f"Ошибка при обработке: {error}")
 
