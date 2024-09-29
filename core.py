@@ -183,9 +183,9 @@ class WBParse:
             logger.info(f"Страница загружена")
             self.__parse_page()
             logger.info(f"Парсинг завершен")
+            self.driver.quit()
         except Exception as error:
             print(f"Ошибка при обработке: {error}")
-        finally: self.driver.quit()
 
 def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
