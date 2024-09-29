@@ -1,9 +1,7 @@
 import os
 import time
 import re
-import requests
 from notifiers.logging import NotificationHandler
-from seleniumbase import SB
 from loguru import logger
 from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
@@ -187,6 +185,7 @@ class WBParse:
             logger.info(f"Парсинг завершен")
         except Exception as error:
             print(f"Ошибка при обработке: {error}")
+        finally: self.driver.quit()
 
 def main():
     url = 'https://seller.wildberries.ru/supplies-managment/all-supplies'
