@@ -183,7 +183,6 @@ class WBParse:
             logger.info(f"Страница загружена")
             self.__parse_page()
             logger.info(f"Парсинг завершен")
-            self.driver.quit()
         except Exception as error:
             print(f"Ошибка при обработке: {error}")
 
@@ -206,22 +205,23 @@ def main():
             logger.add(tg_handler, level="SUCCESS", format="{message}")
     logger.success('Браузер запущен')
     try:
-        with webdriver.Chrome(options=options) as browser_driver:
-            time.sleep(0.5)
-            while True:
-                try:
-                    driver = WBParse(
-                        url=url,
-                        driver=browser_driver,
-                        action = webdriver.ActionChains(browser_driver)
-                    )
-                    driver.parse()
-                    logger.info(f"Завершен парсинг для URL: {url}")
-                except Exception as error:
-                    print(f"Ошибка при парсинге URL {url}: {error}")
-                    print('Произошла ошибка, но работа будет продолжена через 30 сек.')
-                logger.info("Пауза перед следующим циклом")
-                time.sleep(int(config["BOT"]["INTERVAL"])*60)
+        while True:
+            with webdriver.Chrome(options=options) as browser_driver:
+                time.sleep(0.5)
+            try:
+                driver = WBParse(
+                    url=url,
+                    driver=browser_driver,
+                    action = webdriver.ActionChains(browser_driver)
+                )
+                driver.parse()
+                driver.driver.quit()
+                logger.info(f"Завершен парсинг для URL: {url}")
+            except Exception as error:
+                print(f"Ошибка при парсинге URL {url}: {error}")
+                print('Произошла ошибка, но работа будет продолжена через 30 сек.')
+            logger.info("Пауза перед следующим циклом")
+            time.sleep(int(config["BOT"]["INTERVAL"])*60)
     except Exception as e:
         print(f"Ошибка при создании браузера: {e}")
 
