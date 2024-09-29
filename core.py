@@ -82,7 +82,7 @@ class WBParse:
                     continue
             print(page_ids)
             # Проверяем каждый ID из файла и кликаем, если найден на странице
-            for ticket_id in self.tickets_list:
+            for ticket_id in reversed(self.tickets_list):
                 if ticket_id in page_ids:
                     # Кликаем по ID
                     try:
