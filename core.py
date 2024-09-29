@@ -221,7 +221,7 @@ def main():
                     print(f"Ошибка при парсинге URL {url}: {error}")
                     print('Произошла ошибка, но работа будет продолжена через 30 сек.')
                 logger.info("Пауза перед следующим циклом")
-                time.sleep(int(config["BOT"]["INTERVAL"])*60)
+            time.sleep(int(config["BOT"]["INTERVAL"])*60)
     except Exception as e:
         print(f"Ошибка при создании браузера: {e}")
 
