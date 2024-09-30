@@ -1,16 +1,13 @@
 import os
 import time
-import re
 from notifiers.logging import NotificationHandler
 from loguru import logger
 from selenium.webdriver import ActionChains
 from seleniumwire import webdriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from locator import Locator
 import configparser
-import json
 import locale
 from datetime import datetime, timedelta
 from tg.ticket import File
@@ -19,28 +16,25 @@ locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 
 is_empty = False
 
+#Читаем конфиг, файл с поставками
 config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 tickets = File("tg/tickets")
 
 class WBParse:
-
+    """Класс парсера"""
     def __init__(self,
                  driver = None,
                  url = None,
                  action = None,
                  ):
-        self.data = []
         self.url = url
-        self.tg_token = config['BOT']["TOKEN"]
         self.driver = driver
         self.action = action
 
     def __get_url(self):
         self.driver.get(self.url)
         time.sleep(5)
-
-    import os
 
     @logger.catch
     def __parse_page(self):
@@ -62,10 +56,10 @@ class WBParse:
                 self.action.perform()
                 WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
                 WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[name=pagination-select]"))).click()
+                    EC.element_to_be_clickable(Locator.PAGINATION)).click()
                 WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")))
-                options = self.driver.find_elements(By.CSS_SELECTOR, "div.Custom-select-option__HLXYwVWDUc span")
+                    EC.element_to_be_clickable(Locator.OPTIONS))
+                options = self.driver.find_elements(*Locator.OPTIONS)
                 for option in options:
                     if option.text == "100":
                         option.click()
@@ -107,7 +101,7 @@ class WBParse:
             print(f"Ошибка при обработке: {e}")
 
     def __pretty_log(self, data):
-        """Красивый вывод"""
+        """Уведомление в бота"""
         try:
             coef = data.get('coefficient')
             date = data.get('date')
@@ -116,7 +110,7 @@ class WBParse:
             logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
             tickets.delete(str(id_ticket.strip()))
         except Exception as e:
-            print(e)
+            print("Ошибка при уведомлении в ТГ - ",e)
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
         """Парсит для доп. информации открытое объявление на отдельной вкладке"""
@@ -126,10 +120,10 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
-            button_planning = self.driver.find_element(By.XPATH, '//button[span[text()="Запланировать"]]')
+            button_planning = self.driver.find_element(*Locator.CONFIRM)
             for cell in cells:
                 try:
-                    date_text = cell.find_element(By.CSS_SELECTOR, "div.Calendar-cell__date-container__2TUSaIwaeG span").text
+                    date_text = cell.find_element(*Locator.DATE).text
                     
                     # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
                     try:
@@ -152,12 +146,11 @@ class WBParse:
 
                     # Сравниваем даты
                     if date_object > buffer_date:
-                        coefficient_element = cell.find_element(By.CSS_SELECTOR, "div.Coefficient-table-cell__EqV0w0Bye8")
+                        coefficient_element = cell.find_element(*Locator.RATE)
                         coefficient_text = coefficient_element.text
                         if "Бесплатно" in coefficient_text:
                             coefficient_value = "Бесплатно"
-                            button_hover = cell.find_element(By.CSS_SELECTOR,
-                                                            'div.Calendar-cell__button-container__ANliSQlw9D')
+                            button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
 
                             # Перемещение курсора на кнопку
                             self.action.move_to_element(button_hover).perform()
@@ -165,7 +158,7 @@ class WBParse:
 
                             # Клик только при успешном нахождении элемента
                             try:
-                                cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
                                 button_planning.click()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
@@ -176,8 +169,7 @@ class WBParse:
                         elif '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
                             if coefficient_value == "1":
-                                button_hover = cell.find_element(By.CSS_SELECTOR,
-                                                                'div.Calendar-cell__button-container__ANliSQlw9D')
+                                button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
 
                                 # Перемещение курсора на кнопку
                                 self.action.move_to_element(button_hover).perform()
@@ -186,7 +178,7 @@ class WBParse:
 
                                 # Клик только при успешном нахождении элемента
                                 try:
-                                    cell.find_element(By.XPATH, '//button[span[text()="Выбрать"]]').click()
+                                    cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
                                     button_planning.click()
                                     self.__pretty_log(
