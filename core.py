@@ -231,7 +231,7 @@ def main():
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
     global delay
-    delay = time.sleep(config["BOT"]["DELAY"])
+    delay = int(time.sleep(config["BOT"]["DELAY"]))
     persons = config["BOT"]["PERSON"].split(",")
 
     #Добавляем уведомления каждому пользователю
