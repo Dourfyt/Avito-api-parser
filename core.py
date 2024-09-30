@@ -171,7 +171,7 @@ class WBParse:
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
-                                print(f"Error clicking 'Выбрать': {e}")
+                                print(f"Ошибка при нжатии 'Выбрать': {e}")
 
                         elif '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
