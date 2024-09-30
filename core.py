@@ -21,6 +21,9 @@ config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 tickets = File("tg/tickets")
 
+def delay():
+    time.sleep(int(config["BOT"]["DELAY"]))
+
 class WBParse:
     """Класс парсера"""
     def __init__(self,
@@ -230,8 +233,6 @@ def main():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
-    global delay
-    delay = time.sleep(int(config["BOT"]["DELAY"]))
     persons = config["BOT"]["PERSON"].split(",")
 
     #Добавляем уведомления каждому пользователю
