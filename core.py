@@ -40,6 +40,7 @@ class WBParse:
     def __parse_page(self):
         """Парсит все поставки"""
         time.sleep(1)
+        delay()
         global is_empty
         try:
             # Читаем существующие ID из файла tickets.txt
@@ -64,11 +65,12 @@ class WBParse:
                     if option.text == "100":
                         option.click()
                 time.sleep(1)
+                delay()
 
                 # Парсим строки на странице и собираем ID в массив
                 rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                 page_ids = []
-
+                delay()
                 for row in rows:
                     id_element = row.find_element(*Locator.ID)
                     id_text = id_element.text.strip()  # Убираем пробелы
@@ -116,6 +118,7 @@ class WBParse:
         """Парсит поставку"""
         try:
             time.sleep(1)
+            delay()
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
@@ -227,6 +230,8 @@ def main():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
+    global delay
+    delay = time.sleep(config["BOT"]["DELAY"])
     persons = config["BOT"]["PERSON"].split(",")
 
     #Добавляем уведомления каждому пользователю
