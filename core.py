@@ -38,7 +38,7 @@ class WBParse:
 
     @logger.catch
     def __parse_page(self):
-        """Парсит открытую страницу"""
+        """Парсит все поставки"""
         time.sleep(1)
         global is_empty
         try:
@@ -113,7 +113,7 @@ class WBParse:
             print("Ошибка при уведомлении в ТГ - ",e)
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
-        """Парсит для доп. информации открытое объявление на отдельной вкладке"""
+        """Парсит поставку"""
         try:
             time.sleep(1)
             WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(Locator.PLAN)).click()
@@ -203,6 +203,7 @@ class WBParse:
         return False
 
     def is_tickets(self, id: str) -> bool:
+        """Есть ли заявка в файле, и последняя ли добавленная она"""
         if id == self.tickets_list[-1]:
             return True
         return False
