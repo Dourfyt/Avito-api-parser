@@ -227,6 +227,8 @@ def main():
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
     persons = config["BOT"]["PERSON"].split(",")
+
+    #Добавляем уведомления каждому пользователю
     for person in persons:
         if token and person:
             params = {
@@ -235,7 +237,7 @@ def main():
             }
             tg_handler = NotificationHandler("telegram", defaults=params)
             logger.add(tg_handler, level="SUCCESS", format="{message}")
-    logger.success('Браузер запущен')
+
     try:
         while True:
             with webdriver.Chrome(options=options) as browser_driver:
