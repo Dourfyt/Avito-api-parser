@@ -85,6 +85,7 @@ class WBParse:
                             self.__get_url()
                             self.__get_to_postavki()
                             self.__pagination()
+                            time.sleep(int(config["BOT"]["IN_CYCLE_DELAY"])*60)
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
