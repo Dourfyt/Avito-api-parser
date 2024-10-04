@@ -69,7 +69,6 @@ class WBParse:
                         option.click()
                 time.sleep(1)
                 delay()
-
                 # Парсим строки на странице и собираем ID в массив
                 rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                 page_ids = []
