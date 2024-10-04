@@ -80,6 +80,8 @@ class WBParse:
                                               row.find_element(*Locator.ID).text.strip() == ticket_id)
                             id_element.click()
                             self.__parse_full_page(ticket_id)
+                            delay()
+                            self.__get_url()
                             self.__get_to_postavki()
                             self.__pagination()
                         except Exception as e:
