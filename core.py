@@ -76,7 +76,7 @@ class WBParse:
                 for ticket_id in reversed(self.tickets_list):
                     if ticket_id in page_ids:
                         try:
-                            WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
+                            rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                             id_element = next(row.find_element(*Locator.ID) for row in rows if
                                               row.find_element(*Locator.ID).text.strip() == ticket_id)
                             id_element.click()
