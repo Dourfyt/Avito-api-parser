@@ -55,18 +55,8 @@ class WBParse:
                 self.tickets_list = []
             if len(self.tickets_list) != 0:
                 is_empty = False
-                navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
-                self.action.move_to_element(navigator)
-                self.action.perform()
-                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
-                WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable(Locator.PAGINATION)).click()
-                WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable(Locator.OPTIONS))
-                options = self.driver.find_elements(*Locator.OPTIONS)
-                for option in options:
-                    if option.text == "100":
-                        option.click()
+                self.__get_to_postavki()
+                self.__pagination()
                 time.sleep(1)
                 delay()
                 # Парсим строки на странице и собираем ID в массив
@@ -90,6 +80,8 @@ class WBParse:
                                               row.find_element(*Locator.ID).text.strip() == ticket_id)
                             id_element.click()
                             self.__parse_full_page(ticket_id)
+                            self.__get_to_postavki()
+                            self.__pagination()
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
@@ -103,6 +95,22 @@ class WBParse:
 
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
+
+    def __pagination(self):
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(Locator.PAGINATION)).click()
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(Locator.OPTIONS))
+        options = self.driver.find_elements(*Locator.OPTIONS)
+        for option in options:
+            if option.text == "100":
+                option.click()
+
+    def __get_to_postavki(self):
+        navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
+        self.action.move_to_element(navigator)
+        self.action.perform()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
 
     def __pretty_log(self, data):
         """Уведомление в бота"""
