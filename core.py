@@ -209,8 +209,8 @@ class WBParse:
         return False
 
     def is_tickets(self, id: str) -> bool:
-        """Есть ли заявка в файле, и последняя ли добавленная она"""
-        if id == self.tickets_list[-1]:
+        """Есть ли заявка в файле"""
+        if id == self.tickets_list:
             return True
         return False
 
