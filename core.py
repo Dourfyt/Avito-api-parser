@@ -178,6 +178,7 @@ class WBParse:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
                                 self.action.move_to_element(button_planning).click().perform()
+                                time.sleep(10)
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
@@ -198,6 +199,7 @@ class WBParse:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
                                     self.action.move_to_element(button_planning).click().perform()
+                                    time.sleep(10)
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
