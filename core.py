@@ -159,7 +159,7 @@ class WBParse:
                     buffer_days = int(config["BOT"]["BUFFER"])
                     today = datetime.now()
                     buffer_date = today + timedelta(days=buffer_days)
-                    button_confirm = self.driver.find_element(*Locator.CONFIRM).click()
+                    button_confirm = self.driver.find_element(*Locator.CONFIRM)
                     # Сравниваем даты
                     if date_object > buffer_date:
                         coefficient_element = cell.find_element(*Locator.RATE)
