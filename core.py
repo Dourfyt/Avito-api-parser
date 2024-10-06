@@ -176,7 +176,7 @@ class WBParse:
                             try:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
-                                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.CONFIRM)).click()
+                                self.driver.find_element(*Locator.CONFIRM).click()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
@@ -196,7 +196,7 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.CONFIRM)).click()
+                                    self.driver.find_element(*Locator.CONFIRM).click()
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
