@@ -137,6 +137,7 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
+            button_planning = self.driver.find_element(*Locator.CONFIRM)
             for cell in cells:
                 try:
                     date_text = cell.find_element(*Locator.DATE).text
@@ -159,7 +160,7 @@ class WBParse:
                     buffer_days = int(config["BOT"]["BUFFER"])
                     today = datetime.now()
                     buffer_date = today + timedelta(days=buffer_days)
-                    button_confirm = self.driver.find_element(*Locator.CONFIRM)
+
                     # Сравниваем даты
                     if date_object > buffer_date:
                         coefficient_element = cell.find_element(*Locator.RATE)
@@ -176,11 +177,11 @@ class WBParse:
                             try:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
-                                self.action.move_to_element(button_confirm).click().perform()
+                                self.action.move_to_element(button_planning).click().perform()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
-                                print(f"Ошибка при нжатии 'Выбрать': {e}")
+                                print(f"Ошибка при нажатии 'Выбрать': {e}")
 
                         elif '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -196,7 +197,7 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    self.action.move_to_element(button_confirm).click().perform()
+                                    self.action.move_to_element(button_planning).click().perform()
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
