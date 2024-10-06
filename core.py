@@ -177,11 +177,11 @@ class WBParse:
                             try:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
-                                button_planning.click()
+                                self.action.move_to_element(button_planning).click().perform()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
-                                print(f"Ошибка при нжатии 'Выбрать': {e}")
+                                print(f"Ошибка при нажатии 'Выбрать': {e}")
 
                         elif '✕' in coefficient_text:
                             coefficient_value = coefficient_text.split('✕')[1].strip()
@@ -197,7 +197,7 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    button_planning.click()
+                                    self.action.move_to_element(button_planning).click().perform()
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
