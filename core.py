@@ -137,7 +137,6 @@ class WBParse:
             cells = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.CELLS_TABLE))
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
-            button_planning = self.driver.find_element(*Locator.CONFIRM)
             for cell in cells:
                 try:
                     date_text = cell.find_element(*Locator.DATE).text
@@ -177,7 +176,7 @@ class WBParse:
                             try:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
-                                button_planning.click()
+                                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.CONFIRM)).click()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
