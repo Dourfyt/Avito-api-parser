@@ -159,7 +159,7 @@ class WBParse:
                     buffer_days = int(config["BOT"]["BUFFER"])
                     today = datetime.now()
                     buffer_date = today + timedelta(days=buffer_days)
-
+                    button_confirm = self.driver.find_element(*Locator.CONFIRM).click()
                     # Сравниваем даты
                     if date_object > buffer_date:
                         coefficient_element = cell.find_element(*Locator.RATE)
@@ -176,7 +176,7 @@ class WBParse:
                             try:
                                 cell.find_element(*Locator.CHOOSE).click()
                                 time.sleep(2)
-                                self.driver.find_element(*Locator.CONFIRM).click()
+                                self.action.move_to_element(button_confirm).click().perform()
                                 self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                 return True
                             except Exception as e:
@@ -196,7 +196,7 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    self.driver.find_element(*Locator.CONFIRM).click()
+                                    self.action.move_to_element(button_confirm).click().perform()
                                     self.__pretty_log(
                                         {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
                                     return True
