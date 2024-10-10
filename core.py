@@ -21,9 +21,6 @@ config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 tickets = File("tg/tickets")
 
-def delay():
-    time.sleep(int(config["BOT"]["DELAY"]))
-
 class WBParse:
     """Класс парсера"""
     def __init__(self,
@@ -55,10 +52,21 @@ class WBParse:
                 self.tickets_list = []
             if len(self.tickets_list) != 0:
                 is_empty = False
-                self.__get_to_postavki()
-                self.__pagination()
+                navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
+                self.action.move_to_element(navigator)
+                self.action.perform()
+                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable(Locator.PAGINATION)).click()
+                WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable(Locator.OPTIONS))
+                options = self.driver.find_elements(*Locator.OPTIONS)
+                for option in options:
+                    if option.text == "100":
+                        option.click()
                 time.sleep(1)
                 delay()
+
                 # Парсим строки на странице и собираем ID в массив
                 rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                 page_ids = []
@@ -76,16 +84,10 @@ class WBParse:
                 for ticket_id in reversed(self.tickets_list):
                     if ticket_id in page_ids:
                         try:
-                            rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                             id_element = next(row.find_element(*Locator.ID) for row in rows if
                                               row.find_element(*Locator.ID).text.strip() == ticket_id)
                             id_element.click()
                             self.__parse_full_page(ticket_id)
-                            delay()
-                            self.__get_url()
-                            self.__get_to_postavki()
-                            self.__pagination()
-                            time.sleep(int(config["BOT"]["IN_CYCLE_DELAY"])*60)
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
@@ -100,22 +102,6 @@ class WBParse:
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
 
-    def __pagination(self):
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(Locator.PAGINATION)).click()
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(Locator.OPTIONS))
-        options = self.driver.find_elements(*Locator.OPTIONS)
-        for option in options:
-            if option.text == "100":
-                option.click()
-
-    def __get_to_postavki(self):
-        navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
-        self.action.move_to_element(navigator)
-        self.action.perform()
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
-
     def __pretty_log(self, data):
         """Уведомление в бота"""
         try:
@@ -129,7 +115,7 @@ class WBParse:
             print("Ошибка при уведомлении в ТГ - ",e)
 
     def __parse_full_page(self, url: str, data: dict = {}) -> bool:
-        """Парсит поставку"""
+        """Парсит поставку с проверкой коэффициентов от 'Бесплатно' до максимального"""
         try:
             time.sleep(1)
             delay()
@@ -138,83 +124,62 @@ class WBParse:
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
             button_planning = self.driver.find_element(*Locator.CONFIRM)
-            for cell in cells:
-                try:
-                    date_text = cell.find_element(*Locator.DATE).text
-                    
-                    # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
+
+            # Получаем максимальное значение коэффициента из конфига
+            max_rate = int(config["BOT"]["MAX_RATE"])
+
+            # Создаем список коэффициентов, начиная с "Бесплатно", затем от 'x1' до 'x{max_rate}'
+            coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
+
+            # Проходим по каждому коэффициенту
+            for coefficient in coefficients:
+                for cell in cells:
                     try:
-                        # Убираем день недели из строки, чтобы корректно преобразовать дату
-                        date_text_clean = date_text.split(',')[0].strip()
+                        date_text = cell.find_element(*Locator.DATE).text
 
-                        # Преобразуем дату с русскими месяцами
-                        date_object = datetime.strptime(date_text_clean, "%d %B")
-                        
-                        # Добавляем текущий год, так как год в исходной строке отсутствует
-                        date_object = date_object.replace(year=datetime.now().year)
+                        # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
+                        try:
+                            date_text_clean = date_text.split(',')[0].strip()
+                            date_object = datetime.strptime(date_text_clean, "%d %B")
+                            date_object = date_object.replace(year=datetime.now().year)
+                        except ValueError as ve:
+                            print(f"Ошибка при преобразовании даты: {ve}")
+                            continue
 
-                    except ValueError as ve:
-                        print(f"Ошибка при преобразовании даты: {ve}")
-                        continue
+                        buffer_days = int(config["BOT"]["BUFFER"])
+                        today = datetime.now()
+                        buffer_date = today + timedelta(days=buffer_days)
 
-                    buffer_days = int(config["BOT"]["BUFFER"])
-                    today = datetime.now()
-                    buffer_date = today + timedelta(days=buffer_days)
+                        # Проверяем, что дата больше буферной
+                        if date_object > buffer_date:
+                            coefficient_element = cell.find_element(*Locator.RATE)
+                            coefficient_text = coefficient_element.text
 
-                    # Сравниваем даты
-                    if date_object > buffer_date:
-                        coefficient_element = cell.find_element(*Locator.RATE)
-                        coefficient_text = coefficient_element.text
-                        if "Бесплатно" in coefficient_text:
-                            coefficient_value = "Бесплатно"
-                            button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
-
-                            # Перемещение курсора на кнопку
-                            self.action.move_to_element(button_hover).perform()
-                            time.sleep(1)
-
-                            # Клик только при успешном нахождении элемента
-                            try:
-                                cell.find_element(*Locator.CHOOSE).click()
-                                time.sleep(2)
-                                self.action.move_to_element(button_planning).click().perform()
-                                time.sleep(10)
-                                self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
-                                return True
-                            except Exception as e:
-                                print(f"Ошибка при нажатии 'Выбрать': {e}")
-
-                        elif '✕' in coefficient_text:
-                            coefficient_value = coefficient_text.split('✕')[1].strip()
-                            if coefficient_value == "1":
+                            # Проверяем наличие текущего коэффициента (например, 'Бесплатно', '✕1', '✕2' и т.д.)
+                            if coefficient in coefficient_text:
                                 button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
-
-                                # Перемещение курсора на кнопку
                                 self.action.move_to_element(button_hover).perform()
                                 time.sleep(1)
-                                
 
                                 # Клик только при успешном нахождении элемента
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    self.action.move_to_element(button_planning).click().perform()
-                                    time.sleep(10)
-                                    self.__pretty_log(
-                                        {"id_ticket": id_ticket, 'coefficient': coefficient_value, 'date': date_text})
+                                    # self.action.move_to_element(button_planning).click().perform()
+                                    # time.sleep(10)
+                                    # self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
                                     return True
                                 except Exception as e:
-                                    print(f"Error clicking 'Выбрать': {e}")
+                                    print(f"Ошибка при нажатии 'Выбрать': {e}")
+                            else:
+                                print(f"Коэффициент {coefficient} не найден в ячейке.")
 
                         else:
-                            print("Коэффициент не найден")
+                            print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + {buffer_days} дня")
 
-                    else:
-                        print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + {buffer_days} дня")
-
-                except Exception as e:
-                    print(f"Ошибка: {e}")
-                    continue
+                    except Exception as e:
+                        print(f"Ошибка: {e}")
+                        continue
 
         except Exception as e:
             print(f"Ошибка: {e}")
@@ -222,8 +187,8 @@ class WBParse:
         return False
 
     def is_tickets(self, id: str) -> bool:
-        """Есть ли заявка в файле"""
-        if id == self.tickets_list:
+        """Есть ли заявка в файле, и последняя ли добавленная она"""
+        if id == self.tickets_list[-1]:
             return True
         return False
 
@@ -246,6 +211,8 @@ def main():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
+    global delay
+    delay = time.sleep(config["BOT"]["DELAY"])
     persons = config["BOT"]["PERSON"].split(",")
 
     #Добавляем уведомления каждому пользователю
