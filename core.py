@@ -21,6 +21,9 @@ config = configparser.ConfigParser(interpolation=None)
 config.read("config.ini")
 tickets = File("tg/tickets")
 
+def delay():
+    time.sleep(int(config["BOT"]["DELAY"]))
+
 class WBParse:
     """Класс парсера"""
     def __init__(self,
@@ -52,21 +55,10 @@ class WBParse:
                 self.tickets_list = []
             if len(self.tickets_list) != 0:
                 is_empty = False
-                navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
-                self.action.move_to_element(navigator)
-                self.action.perform()
-                WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
-                WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable(Locator.PAGINATION)).click()
-                WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable(Locator.OPTIONS))
-                options = self.driver.find_elements(*Locator.OPTIONS)
-                for option in options:
-                    if option.text == "100":
-                        option.click()
+                self.__get_to_postavki()
+                self.__pagination()
                 time.sleep(1)
                 delay()
-
                 # Парсим строки на странице и собираем ID в массив
                 rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                 page_ids = []
@@ -84,10 +76,16 @@ class WBParse:
                 for ticket_id in reversed(self.tickets_list):
                     if ticket_id in page_ids:
                         try:
+                            rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
                             id_element = next(row.find_element(*Locator.ID) for row in rows if
                                               row.find_element(*Locator.ID).text.strip() == ticket_id)
                             id_element.click()
                             self.__parse_full_page(ticket_id)
+                            delay()
+                            self.__get_url()
+                            self.__get_to_postavki()
+                            self.__pagination()
+                            time.sleep(int(config["BOT"]["IN_CYCLE_DELAY"])*60)
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
@@ -101,6 +99,22 @@ class WBParse:
 
         except Exception as e:
             print(f"Ошибка при обработке: {e}")
+
+    def __pagination(self):
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(Locator.PAGINATION)).click()
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(Locator.OPTIONS))
+        options = self.driver.find_elements(*Locator.OPTIONS)
+        for option in options:
+            if option.text == "100":
+                option.click()
+
+    def __get_to_postavki(self):
+        navigator = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(Locator.NAVIGATOR))
+        self.action.move_to_element(navigator)
+        self.action.perform()
+        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(Locator.LI_NAVIGATOR)).click()
 
     def __pretty_log(self, data):
         """Уведомление в бота"""
@@ -165,9 +179,9 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    # self.action.move_to_element(button_planning).click().perform()
-                                    # time.sleep(10)
-                                    # self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
+                                    self.action.move_to_element(button_planning).click().perform()
+                                    time.sleep(10)
+                                    self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
                                     return True
                                 except Exception as e:
                                     print(f"Ошибка при нажатии 'Выбрать': {e}")
@@ -187,8 +201,8 @@ class WBParse:
         return False
 
     def is_tickets(self, id: str) -> bool:
-        """Есть ли заявка в файле, и последняя ли добавленная она"""
-        if id == self.tickets_list[-1]:
+        """Есть ли заявка в файле"""
+        if id == self.tickets_list:
             return True
         return False
 
@@ -211,8 +225,6 @@ def main():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     token = config["BOT"]["TOKEN"]
-    global delay
-    delay = time.sleep(config["BOT"]["DELAY"])
     persons = config["BOT"]["PERSON"].split(",")
 
     #Добавляем уведомления каждому пользователю
