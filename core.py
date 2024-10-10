@@ -168,9 +168,9 @@ class WBParse:
                         if date_object > buffer_date:
                             coefficient_element = cell.find_element(*Locator.RATE)
                             coefficient_text = coefficient_element.text
-
+                            print(f"{coefficient_text, coefficient}")
                             # Проверяем наличие текущего коэффициента (например, 'Бесплатно', '✕1', '✕2' и т.д.)
-                            if coefficient in coefficient_text:
+                            if coefficient_text == f"✕{coefficient}":
                                 button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
                                 self.action.move_to_element(button_hover).perform()
                                 time.sleep(1)
@@ -179,9 +179,9 @@ class WBParse:
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
-                                    self.action.move_to_element(button_planning).click().perform()
-                                    time.sleep(10)
-                                    self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
+                                    # self.action.move_to_element(button_planning).click().perform()
+                                    # time.sleep(10)
+                                    # self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
                                     return True
                                 except Exception as e:
                                     print(f"Ошибка при нажатии 'Выбрать': {e}")
