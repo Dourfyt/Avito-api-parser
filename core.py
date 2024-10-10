@@ -170,7 +170,7 @@ class WBParse:
                             coefficient_text = coefficient_element.text
                             print(f"{coefficient_text, coefficient}")
                             # Проверяем наличие текущего коэффициента (например, 'Бесплатно', '✕1', '✕2' и т.д.)
-                            if coefficient_text == f"✕{coefficient}":
+                            if coefficient_text.strip() == f"✕{coefficient}":
                                 button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
                                 self.action.move_to_element(button_hover).perform()
                                 time.sleep(1)
