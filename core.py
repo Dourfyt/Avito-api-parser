@@ -139,7 +139,7 @@ class WBParse:
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
             button_planning = self.driver.find_element(*Locator.CONFIRM)
-
+            ticket_data = tickets.get(id_ticket)
             if ticket_data != "Заявка не найдена":
                 _, max_rate = ticket_data.split(':')
                 max_rate = int(max_rate)
@@ -147,7 +147,7 @@ class WBParse:
             else: max_rate = 0
 
             coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
-            ticket_data = tickets.get(id_ticket)
+            
 
             for coefficient in coefficients:
                 for cell in cells:
