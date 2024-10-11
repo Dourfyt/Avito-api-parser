@@ -25,7 +25,8 @@ class IsAllowedUser(BaseFilter):
         return str(message.from_user.id) in users
 
 class States(StatesGroup):
-    add_ticket = State()
+    add_ticket_id = State()
+    add_ticket_coef = State()
     del_ticket = State()
 
 @dp.message(Command("start"), IsAllowedUser())
@@ -36,13 +37,20 @@ async def cmd_start(message: types.Message, state: FSMContext):
 @dp.callback_query(F.data=="add", IsAllowedUser())
 async def add_ticket(call : types.CallbackQuery, state: FSMContext):
     await call.message.answer("Введите номер заявки")
-    await state.set_state(States.add_ticket)
+    await state.set_state(States.add_ticket_id)
 
-@dp.message(States.add_ticket, F.text)
+@dp.message(States.add_ticket_id, F.text)
 async def add(message : types.Message, state : FSMContext):
-    file.add(message.text)
-    await message.answer(f"Поставка №{message.text} успешно добавлена")
-    await state.clear()
+    global filename
+    filename=message.text
+    await message.answer(f"Введите коэффициент от 1 до 20:")
+    await state.set_state(States.add_ticket_coef)
+
+@dp.message(States.add_ticket_coef, F.text)
+async def add(message : types.Message, state : FSMContext):
+    await message.answer(f"Заявка №{filename} успешно добавлена!")
+    await state.set_state(States.add_ticket_coef)
+    file.add(filename,message.text)
 
 @dp.callback_query(F.data=="delete", IsAllowedUser())
 async def add_ticket(call : types.CallbackQuery, state: FSMContext):

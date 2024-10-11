@@ -139,19 +139,19 @@ class WBParse:
             id_ticket = current_url.split("&")[-2].split("=")[-1]
             button_planning = self.driver.find_element(*Locator.CONFIRM)
 
-            # Получаем максимальное значение коэффициента из конфига
-            max_rate = int(config["BOT"]["MAX_RATE"])
+            if ticket_data != "Заявка не найдена":
+                _, max_rate = ticket_data.split(':')
+                max_rate = int(max_rate)
+                print(max_rate)
+            else: max_rate = 0
 
-            # Создаем список коэффициентов, начиная с "Бесплатно", затем от 'x1' до 'x{max_rate}'
             coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
+            ticket_data = tickets.get(id_ticket)
 
-            # Проходим по каждому коэффициенту
             for coefficient in coefficients:
                 for cell in cells:
                     try:
                         date_text = cell.find_element(*Locator.DATE).text
-
-                        # Преобразуем дату из строки в объект datetime с учётом формата "28 сентября, сб"
                         try:
                             date_text_clean = date_text.split(',')[0].strip()
                             date_object = datetime.strptime(date_text_clean, "%d %B")
@@ -164,18 +164,14 @@ class WBParse:
                         today = datetime.now()
                         buffer_date = today + timedelta(days=buffer_days)
 
-                        # Проверяем, что дата больше буферной
                         if date_object > buffer_date:
                             coefficient_element = cell.find_element(*Locator.RATE)
                             coefficient_text = coefficient_element.text
                             print(f"{coefficient_text, coefficient}")
-                            # Проверяем наличие текущего коэффициента (например, 'Бесплатно', '✕1', '✕2' и т.д.)
                             if coefficient_text.strip() == f"{coefficient}":
                                 button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
                                 self.action.move_to_element(button_hover).perform()
                                 time.sleep(1)
-
-                                # Клик только при успешном нахождении элемента
                                 try:
                                     cell.find_element(*Locator.CHOOSE).click()
                                     time.sleep(2)
