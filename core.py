@@ -73,7 +73,8 @@ class WBParse:
                     else:
                         continue
                 # Проверяем каждый ID из файла и кликаем, если найден на странице
-                for ticket_id.split(":")[0] in reversed(self.tickets_list):
+                for ticket in reversed(self.tickets_list):
+                    ticket_id = ticket.split(":")[0]
                     if ticket_id in page_ids:
                         try:
                             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
