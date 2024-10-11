@@ -123,8 +123,9 @@ class WBParse:
             coef = data.get('coefficient')
             date = data.get('date')
             id_ticket = data.get('id_ticket')
+            new_id = data.get("new_id")
             print(f"Ticket ID для удаления: {id_ticket}")
-            logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}')
+            logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}\n\n Номер поставки изменен на: №{new_id}')
             tickets.delete(str(id_ticket.strip()))
         except Exception as e:
             print("Ошибка при уведомлении в ТГ - ",e)
@@ -178,7 +179,10 @@ class WBParse:
                                     time.sleep(2)
                                     self.action.move_to_element(button_planning).click().perform()
                                     time.sleep(10)
-                                    self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text})
+                                    new_id_el = self.driver.find_element(*Locator.ID).text
+                                    new_id = new_id_el.strip()
+                                    time.sleep(1)
+                                    self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text, "new_id": new_id})
                                     return True
                                 except Exception as e:
                                     print(f"Ошибка при нажатии 'Выбрать': {e}")
