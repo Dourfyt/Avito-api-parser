@@ -31,7 +31,7 @@ class States(StatesGroup):
 
 @dp.message(Command("start"), IsAllowedUser())
 async def cmd_start(message: types.Message, state: FSMContext):
-    await message.answer("Здравствуйте, я бот для работы с заявками WB!", reply_markup=kb.tickets_kb())
+    await message.answer("Выберите нужное действие", reply_markup=kb.tickets_kb())
     await state.clear()
 
 @dp.callback_query(F.data=="add", IsAllowedUser())

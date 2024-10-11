@@ -13,7 +13,7 @@ class File:
 
     def rewrite(self):
         with open(self.filename, "w") as f:
-            return "Файл успешно сброшен!"
+            return "Все задания удалены!"
 
     def show(self):
         with open(self.filename, "r") as f:
@@ -24,7 +24,7 @@ class File:
                     result += line
                 return result
             else:
-                return "Файл пустой"
+                return "Не обработанные поставки отсутствуют"
 
     def add(self, ticket_id, max_rate):
         """Добавить строку заявки с максимальным коэффициентом"""
