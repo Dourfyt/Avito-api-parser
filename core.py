@@ -124,8 +124,9 @@ class WBParse:
             date = data.get('date')
             id_ticket = data.get('id_ticket')
             new_id = data.get("new_id")
+            new_id = new_id.split(' ')[1]
             print(f"Ticket ID для удаления: {id_ticket}")
-            logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}\n\n Номер поставки изменен на: №{new_id}')
+            logger.success(f'Статус заявки №{id_ticket} изменен на "запланирован" с коэффициентом {coef} | {date}\n\nНомер поставки изменен на: №{new_id}')
             tickets.delete(str(id_ticket.strip()))
         except Exception as e:
             print("Ошибка при уведомлении в ТГ - ",e)
