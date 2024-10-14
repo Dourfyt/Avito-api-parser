@@ -141,7 +141,9 @@ class WBParse:
             current_url = str(self.driver.current_url)
             id_ticket = current_url.split("&")[-2].split("=")[-1]
             button_planning = self.driver.find_element(*Locator.CONFIRM)
+
             ticket_data = tickets.get(id_ticket)
+
             if ticket_data != "Заявка не найдена":
                 _, max_rate = ticket_data.split(':')
                 max_rate = int(max_rate)
@@ -150,7 +152,7 @@ class WBParse:
 
             coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
             
-
+            print(self.tickets_list)
             for coefficient in coefficients:
                 for cell in cells:
                     try:
@@ -256,7 +258,9 @@ def main():
                     print(f"Ошибка при парсинге URL {url}: {error}")
                     print('Произошла ошибка, но работа будет продолжена через 30 сек.')
                 logger.info("Пауза перед следующим циклом")
+            
             time.sleep(int(config["BOT"]["INTERVAL"])*60)
+            
     except Exception as e:
         print(f"Ошибка при создании браузера: {e}")
 
