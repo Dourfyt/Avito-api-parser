@@ -91,11 +91,9 @@ class WBParse:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id.split(":")[0] in page_ids]
                 print(self.tickets_list)
-                tickets.show()
                 with open('tg/tickets.txt', 'w') as file:
                     for ticket_id in self.tickets_list:
                         file.write(f"{ticket_id}\n")
-                tickets.show()
             elif not is_empty:
                 is_empty = True
                 logger.success("Все заявки отработаны - файл пустой")
