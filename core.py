@@ -89,7 +89,7 @@ class WBParse:
                             time.sleep(int(config["BOT"]["IN_CYCLE_DELAY"])*60)
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
-                self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id in page_ids]
+                self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id.split(":")[0] in page_ids]
                 print(self.tickets_list)
                 tickets.show()
                 with open('tg/tickets.txt', 'w') as file:
@@ -154,7 +154,6 @@ class WBParse:
 
             coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
             
-            print(self.tickets_list)
             for coefficient in coefficients:
                 for cell in cells:
                     try:
