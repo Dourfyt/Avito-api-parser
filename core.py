@@ -57,7 +57,7 @@ class WBParse:
                 is_empty = False
                 self.__get_to_postavki()
                 self.__pagination()
-                time.sleep(1)
+                time.sleep(5)
                 delay()
                 # Парсим строки на странице и собираем ID в массив
                 rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
@@ -78,8 +78,11 @@ class WBParse:
                     if ticket_id in page_ids:
                         try:
                             rows = WebDriverWait(self.driver, 10).until(EC.visibility_of_all_elements_located(Locator.ROWS))
-                            id_element = next(row.find_element(*Locator.ID) for row in rows if
-                                              row.find_element(*Locator.ID).text.strip() == ticket_id)
+                            try:
+                                id_element = next(row.find_element(*Locator.ID) for row in rows if row.find_element(*Locator.ID).text.strip() == ticket_id)
+                            except StopIteration:
+                                print(f"ID {ticket_id} не найден на странице.")
+                                continue
                             id_element.click()
                             self.__parse_full_page(ticket_id)
                             delay()
