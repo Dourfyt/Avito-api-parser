@@ -99,7 +99,7 @@ class WBParse:
                 logger.success("Все заявки отработаны - файл пустой")
 
         except Exception as e:
-            print(f"Ошибка при обработке: {e}")
+            print(f"Ошибка при обработке в __parse_page: {e}")
 
     def __pagination(self):
         WebDriverWait(self.driver, 10).until(
