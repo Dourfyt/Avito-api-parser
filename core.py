@@ -80,6 +80,8 @@ class WBParse:
                         page_ids.append(id_text)
                     else:
                         continue
+                logger.info(f"Заявки на странице: {page_ids}")
+
                 # Проверяем каждый ID из файла и кликаем, если найден на странице
                 for ticket in reversed(self.tickets_list):
                     ticket_id = ticket.split(":")[0]
@@ -100,8 +102,9 @@ class WBParse:
                             time.sleep(int(config["BOT"]["IN_CYCLE_DELAY"])*60)
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
+                logger.info(f"Текущие заявки из файла: {self.tickets_list}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id.split(":")[0] in page_ids]
-                logger.info(f"Текущие заявки из файла: {self.tickets_list}\n\n\nЗаявки на странице: {page_ids}")
+                logger.info(f"Текущие заявки из файла после проверки: {self.tickets_list}")
                 with open('tg/tickets.txt', 'w') as file:
                     for ticket_id in self.tickets_list:
                         file.write(f"{ticket_id}\n")
