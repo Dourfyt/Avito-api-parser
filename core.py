@@ -75,8 +75,7 @@ class WBParse:
                     except:
                         print("ID не найден на 76 строке")
                     id_text = id_element.text.strip()  # Убираем пробелы
-                    status = str(row.find_element(*Locator.STATUS).text).lower()
-
+                    status = str(row.find_element(*Locator.STATUS).text).strip().lower()
                     if id_text and status == "не запланировано":
                         page_ids.append(id_text)
                     else:
@@ -102,7 +101,7 @@ class WBParse:
                         except Exception as e:
                             print(f"Ошибка клика по ID: {ticket_id}, ошибка: {e}")
                 self.tickets_list = [ticket_id for ticket_id in self.tickets_list if ticket_id.split(":")[0] in page_ids]
-                print(self.tickets_list)
+                logger.info(f"Текущие заявки из файла: {self.tickets_list}\n\n\nЗаявки на странице: {page_ids}")
                 with open('tg/tickets.txt', 'w') as file:
                     for ticket_id in self.tickets_list:
                         file.write(f"{ticket_id}\n")
@@ -183,7 +182,6 @@ class WBParse:
                         if date_object > buffer_date:
                             coefficient_element = cell.find_element(*Locator.RATE)
                             coefficient_text = coefficient_element.text
-                            print(f"{coefficient_text, coefficient}")
                             if coefficient_text.strip() == f"{coefficient}":
                                 button_hover = cell.find_element(*Locator.CHOOSE_HOVER)
                                 self.action.move_to_element(button_hover).perform()
@@ -201,10 +199,10 @@ class WBParse:
                                 except Exception as e:
                                     print(f"Ошибка при нажатии 'Выбрать': {e}")
                             else:
-                                print(f"Коэффициент {coefficient} не найден в ячейке.")
+                                continue
 
                         else:
-                            print(f"Дата {date_text} не подходит, так как меньше или равна сегодняшней дате + {buffer_days} дня")
+                            continue
 
                     except Exception as e:
                         print(f"Ошибка: {e}")
