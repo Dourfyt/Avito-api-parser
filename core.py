@@ -161,7 +161,6 @@ class WBParse:
             if ticket_data != "Заявка не найдена":
                 _, max_rate = ticket_data.split(':')
                 max_rate = int(max_rate)
-                print(max_rate)
             else: max_rate = 0
 
             coefficients = ["Бесплатно"] + [f'✕{i}' for i in range(1, max_rate + 1)]
@@ -197,6 +196,7 @@ class WBParse:
                                     new_id_el = self.driver.find_element(*Locator.ID).text
                                     new_id = new_id_el.strip()
                                     time.sleep(1)
+                                    logger.debug("ЗАЯВКА ПРОШЛА")
                                     self.__pretty_log({"id_ticket": id_ticket, 'coefficient': coefficient, 'date': date_text, "new_id": new_id})
                                     return True
                                 except Exception as e:
